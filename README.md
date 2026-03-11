@@ -27,7 +27,7 @@ library_system
 
 4 Import
 
-database/library_system.sql
+database/the_reading_hub (1).sql
 
 5 Install dependencies
 
