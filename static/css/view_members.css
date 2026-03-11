@@ -1,0 +1,235 @@
+/* Main Container - More Compact */
+.view-members-container {
+    max-width: 1400px;
+    margin: 20px auto; /* Reduced margin */
+    padding: 20px; /* Reduced padding */
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* REVERTED: Using the first simple page turn animation */
+    animation: simplePageTurn 0.8s ease-out forwards;
+}
+
+.view-members-container h2 {
+    color: #2c3e50;
+    font-size: 24px; /* Reduced font size */
+    margin-bottom: 15px; /* Further Reduced margin */
+    border-bottom: 2px solid #1abc9c; /* Thinner border */
+    padding-bottom: 8px; /* Reduced padding */
+}
+
+/* Search Form - More Compact */
+.search-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px; /* Further Reduced margin */
+}
+
+.search-form input[type="text"] {
+    flex: 1;
+    padding: 10px 12px; /* Reduced padding */
+    border: 2px solid #bdc3c7;
+    border-radius: 5px;
+    font-size: 13px; /* Reduced font size */
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.search-form input[type="text"]:focus {
+    border-color: #1abc9c;
+    box-shadow: 0 0 0 3px rgba(26, 188, 156, 0.1);
+}
+
+.search-btn {
+    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+    color: white;
+    padding: 10px 20px; /* Reduced padding */
+    border: none;
+    border-radius: 5px;
+    font-size: 13px; /* Reduced font size */
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.search-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(26, 188, 156, 0.3);
+}
+
+.search-btn:active {
+    transform: translateY(0px);
+    box-shadow: 0 2px 4px rgba(26, 188, 156, 0.2);
+}
+
+/* --- MODIFIED: Styles for SCROLLING Table --- */
+.table-wrapper {
+    max-height: 65vh; /* Adjust this value as needed */
+    overflow-y: auto;
+    overflow-x: auto;
+    border: 1px solid #dfe6e9;
+    border-radius: 5px;
+}
+
+.members-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+.members-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #ecf0f1;
+}
+
+.members-table th,
+.members-table td {
+    padding: 8px 6px; /* Reduced padding */
+    text-align: left;
+    border: 1px solid #dfe6e9;
+    vertical-align: middle;
+    white-space: normal; 
+    font-size: 12px; /* Reduced font size */
+}
+
+.members-table th {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.members-table tbody tr:nth-child(even) {
+    background-color: #f8f9f9;
+}
+
+.members-table tbody tr:hover {
+    background-color: #e8f6f3;
+}
+
+/* Styles for column balancing */
+.members-table th:nth-child(5),
+.members-table td:nth-child(5) {
+    max-width: 250px;
+}
+.members-table th:nth-child(7),
+.members-table td:nth-child(7) {
+    min-width: 90px; /* Adjusted min-width */
+    white-space: nowrap;
+}
+
+/* ACTION COLUMN CHANGES START */
+.members-table th:nth-child(8),
+.members-table td:nth-child(8) {
+    min-width: 95px; /* Adjusted min-width for better spacing */
+    text-align: center;
+}
+
+/* Create a flex container for the buttons */
+.actions-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px; /* Adds a small space between buttons */
+}
+/* ACTION COLUMN CHANGES END */
+
+
+/* Membership Badges */
+.membership-badge {
+    padding: 3px 8px; /* Reduced padding */
+    border-radius: 15px;
+    color: white;
+    font-weight: 600;
+    font-size: 10px; /* Reduced font size */
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.type-student { background-color: #3498db; }
+.type-faculty { background-color: #9b59b6; }
+.type-staff { background-color: #e67e22; }
+.type-external { background-color: #7f8c8d; }
+
+/* ▼▼▼ ACTION BUTTONS - UPDATED FOR UNIFORM SIZE ▼▼▼ */
+.view-members-container .action-btn {
+    display: inline-flex;  /* Use flexbox for centering */
+    justify-content: center; /* Center icon horizontally */
+    align-items: center;   /* Center icon vertically */
+    width: 28px;           /* Set a fixed width */
+    height: 28px;          /* Set a fixed height */
+    font-size: 13px;       /* Adjust icon size if needed */
+    text-decoration: none;
+    color: white;
+    border-radius: 4px;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.view-members-container .view-btn { background-color: #1abc9c; }
+.view-members-container .view-btn:hover { background-color: #16a085; transform: scale(1.1); }
+
+.view-members-container .edit-btn { background-color: #f39c12; }
+.view-members-container .edit-btn:hover { background-color: #d35400; transform: scale(1.1); }
+
+.view-members-container .action-btn:active {
+    transform: scale(0.95);
+}
+/* ▲▲▲ END OF ACTION BUTTON STYLES ▲▲▲ */
+
+
+.no-records-message {
+    text-align: center;
+    padding: 20px;
+    color: #7f8c8d;
+    font-weight: 500;
+}
+
+/* --- UPDATED: Page Load Animations --- */
+
+/* The original, simple page turn effect */
+@keyframes simplePageTurn {
+    from {
+        opacity: 0;
+        transform: perspective(1500px) rotateY(-90deg);
+        transform-origin: left center;
+    }
+    to {
+        opacity: 1;
+        transform: perspective(1500px) rotateY(0deg);
+        transform-origin: left center;
+    }
+}
+
+/* Staggered row slide-in from the left */
+@keyframes slideInFromLeftRow {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.members-table tbody tr {
+    opacity: 0; /* Start hidden */
+    animation: slideInFromLeftRow 0.5s ease-out forwards;
+}
+
+/* Stagger the animation delay for the first 15 rows */
+.members-table tbody tr:nth-child(1) { animation-delay: 0.2s; }
+.members-table tbody tr:nth-child(2) { animation-delay: 0.25s; }
+.members-table tbody tr:nth-child(3) { animation-delay: 0.3s; }
+.members-table tbody tr:nth-child(4) { animation-delay: 0.35s; }
+.members-table tbody tr:nth-child(5) { animation-delay: 0.4s; }
+.members-table tbody tr:nth-child(6) { animation-delay: 0.45s; }
+.members-table tbody tr:nth-child(7) { animation-delay: 0.5s; }
+.members-table tbody tr:nth-child(8) { animation-delay: 0.55s; }
+.members-table tbody tr:nth-child(9) { animation-delay: 0.6s; }
+.members-table tbody tr:nth-child(10) { animation-delay: 0.65s; }
+.members-table tbody tr:nth-child(11) { animation-delay: 0.7s; }
+.members-table tbody tr:nth-child(12) { animation-delay: 0.75s; }
+.members-table tbody tr:nth-child(13) { animation-delay: 0.8s; }
+.members-table tbody tr:nth-child(14) { animation-delay: 0.85s; }
+.members-table tbody tr:nth-child(15) { animation-delay: 0.9s; }
+

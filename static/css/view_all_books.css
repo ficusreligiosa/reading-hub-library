@@ -1,0 +1,179 @@
+/* Main Container */
+.view-books-container {
+    max-width: 95%; /* Use more screen width */
+    margin: 20px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    animation: simplePageTurn 0.8s ease-out forwards; 
+}
+
+.view-books-container h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 25px;
+    font-size: 1.8em;
+    font-weight: 700;
+}
+
+/* Filter/Search Bar */
+.filter-container {
+    margin-bottom: 20px;
+}
+
+#searchInput {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+#searchInput:focus {
+    border-color: #667eea;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+/* Table Wrapper for Scrolling */
+.table-wrapper {
+    overflow-x: auto; /* Good for safety on small screens */
+}
+
+/* Books Table Styling */
+.books-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    table-layout: fixed; /* Forces table to obey column widths */
+}
+
+.books-table th,
+.books-table td {
+    padding: 10px 8px; /* Reduced horizontal padding */
+    text-align: left;
+    border-bottom: 1px solid #f1f3f5;
+    vertical-align: middle;
+}
+
+.books-table th {
+    background: #667eea; 
+    color: white;
+    font-weight: 600;
+    font-size: 0.8em; 
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    vertical-align: middle;
+}
+
+.books-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.books-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.books-table td {
+    color: #495057;
+    font-size: 0.85em; 
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ▼▼▼ FINAL COMPACT COLUMN WIDTHS (RE-BALANCED) ▼▼▼ */
+.books-table th:nth-child(1), .books-table td:nth-child(1) { width: 4%; }  /* ID */
+.books-table th:nth-child(2), .books-table td:nth-child(2) { width: 19%; } /* Title (Wider) */
+.books-table th:nth-child(3), .books-table td:nth-child(3) { width: 16%; } /* Author (Wider) */
+.books-table th:nth-child(4), .books-table td:nth-child(4) { width: 13%; } /* Genres */
+.books-table th:nth-child(5), .books-table td:nth-child(5) { width: 6%; }  /* Copies */
+.books-table th:nth-child(6), .books-table td:nth-child(6) { width: 8%; }  /* Price */
+.books-table th:nth-child(7), .books-table td:nth-child(7) { width: 8%; }  /* Shelf */
+.books-table th:nth-child(8), .books-table td:nth-child(8) { width: 11%; } /* Added By */
+.books-table th:nth-child(9), .books-table td:nth-child(9) { width: 15%; } /* Actions (Narrower) */
+/* ▲▲▲ END COLUMN WIDTHS ▲▲▲ */
+
+
+/* --- Action Button (Icon) Styling --- */
+.action-cell {
+    display: flex;
+    align-items: center;
+    gap: 4px; /* REDUCED GAP */
+    white-space: nowrap; 
+}
+
+.action-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    padding: 5px; /* REDUCED PADDING */
+    border-radius: 5px; /* Softer radius */
+    text-decoration: none;
+    font-size: 0.8em; /* SMALLER ICON */
+    transition: all 0.3s ease;
+    width: 26px;  /* Fixed width */
+    height: 26px; /* Fixed height */
+    box-sizing: border-box;
+}
+
+/* SOFTER, MORE PROFESSIONAL COLORS */
+.action-icon.detail {
+    background: #5a67d8; /* Muted Blue */
+    box-shadow: 0 2px 8px rgba(90, 103, 216, 0.3);
+}
+.action-icon.update {
+    background: #38a169; /* Muted Green */
+    box-shadow: 0 2px 8px rgba(56, 161, 105, 0.3);
+}
+.action-icon.delete {
+    background: #e53e3e; /* Muted Red */
+    box-shadow: 0 2px 8px rgba(229, 62, 62, 0.3);
+}
+
+.action-icon:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+/* No Books Message */
+.no-books {
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .view-books-container {
+        padding: 15px;
+        max-width: 100%;
+    }
+    .books-table {
+        table-layout: auto;
+    }
+    .books-table th, .books-table td {
+        width: auto;
+        white-space: nowrap;
+    }
+}
+
+/* Page Turn Animation */
+@keyframes simplePageTurn {
+    from {
+        opacity: 0;
+        transform: perspective(1500px) rotateY(-90deg);
+        transform-origin: left center;
+    }
+    to {
+        opacity: 1;
+        transform: perspective(1500px) rotateY(0deg);
+        transform-origin: left center;
+    }
+}
+

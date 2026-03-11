@@ -1,0 +1,261 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Return Book - Library Management System{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/return_book.css') }}">
+<style>
+    #book-list-container {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 10px;
+        max-height: 250px;
+        overflow-y: auto;
+        background: #fdfdfd;
+        margin-bottom: 15px;
+    }
+    .book-checkbox-label {
+        display: block;
+        padding: 8px 12px;
+        border-bottom: 1px solid #eee;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    .book-checkbox-label:last-child {
+        border-bottom: none;
+    }
+    .book-checkbox-label:hover {
+        background-color: #f4f4f4;
+    }
+    .book-checkbox-label input {
+        margin-right: 10px;
+    }
+    .book-checkbox-label .overdue-warning {
+        font-weight: bold;
+        color: #B22222;
+        margin-left: 10px;
+        font-size: 0.9em;
+    }
+</style>
+{% endblock %}
+
+{% block admin_content %}
+<div class="return-container">
+    <h2>Return a Book</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="message {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form id="return-book-form" method="POST" action="{{ url_for('return_book') }}">
+        <label for="user_search">Search for Member:</label>
+        <input type="text" id="user_search" name="user_search" placeholder="Start typing a member's name..."
+            autocomplete="off">
+        <div id="user-search-results"></div>
+
+        <input type="hidden" id="user_id" name="user_id" required>
+        
+        <div id="book-list-area" style="display: none;">
+            <label>Select Books to Return:</label>
+            <div id="book-list-container">
+                </div>
+        </div>
+
+        <div id="return-fields-area" style="display: none;">
+            <label for="return_date">Return Date (for all selected books):</label>
+            <input type="date" id="return_date" name="return_date" value="{{ today_date }}" required>
+
+            <label for="status">Status (for all selected books):</label>
+            <select name="status" id="status" required>
+                <option value="Returned">Return</option>
+                <option value="Lost">Lost</option>
+                <option value="Damaged">Damaged</option>
+            </select>
+            
+            <div id="damage-fine-section" style="display: none;">
+                <label for="damage_fine">Damage Fine (per book, if applicable):</label>
+                <input type="number" id="damage_fine" name="damage_fine" min="0" step="0.01">
+            </div>
+        </div>
+
+        <button type="submit" id="submit-btn" class="submit-btn">Process Return</button>
+    </form>
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // --- Element References ---
+    const userSearchInput = document.getElementById('user_search');
+    const userSearchResults = document.getElementById('user-search-results');
+    const userIdInput = document.getElementById('user_id');
+    
+    // NEW references
+    const bookListArea = document.getElementById('book-list-area');
+    const bookListContainer = document.getElementById('book-list-container');
+    
+    // OLD references (some removed)
+    // const bookSelectionArea = document.getElementById('book-selection-area');
+    // const bookIdSelect = document.getElementById('book_id');
+    // const detailsContainer = document.getElementById('borrow-details-container');
+    // const hiddenBookTitleInput = document.getElementById('selected_book_title');
+
+    const returnFieldsArea = document.getElementById('return-fields-area');
+    const submitButton = document.getElementById('submit-btn');
+    const statusSelect = document.getElementById('status');
+    const damageFineSection = document.getElementById('damage-fine-section');
+    const damageFineInput = document.getElementById('damage_fine');
+    
+    const prefilledData = JSON.parse('{{ prefilled_data_json | safe }}');
+
+    // --- State Management ---
+    submitButton.disabled = true;
+
+    // --- Functions ---
+    async function searchMembers() {
+        const query = userSearchInput.value;
+        if (query.length < 2) {
+            userSearchResults.innerHTML = '';
+            return;
+        }
+        const response = await fetch(`/search_active_borrowers?query=${query}`);
+        const members = await response.json();
+        // ... (rest of searchMembers is unchanged) ...
+        let resultsHTML = '';
+        if (members.length > 0) {
+            resultsHTML = '<ul>';
+            members.forEach(member => {
+                resultsHTML += `<li data-id="${member.member_id}" data-name="${member.name}">${member.name} - ${member.email}</li>`;
+            });
+            resultsHTML += '</ul>';
+        } else {
+            resultsHTML = '<p>No members found with active loans.</p>';
+        }
+        userSearchResults.innerHTML = resultsHTML;
+    }
+
+    async function selectMember(e) {
+        if (e.target.tagName === 'LI') {
+            const memberId = e.target.dataset.id;
+            const memberName = e.target.dataset.name;
+            userSearchInput.value = memberName;
+            userIdInput.value = memberId;
+            userSearchResults.innerHTML = '';
+            
+            // Clear old data and fetch books
+            bookListContainer.innerHTML = '';
+            bookListArea.style.display = 'none';
+            returnFieldsArea.style.display = 'none';
+            submitButton.disabled = true;
+
+            await fetchBooksForUser(memberId);
+        }
+    }
+
+    // --- THIS FUNCTION IS HEAVILY UPDATED ---
+    async function fetchBooksForUser(userId) {
+        // Calls our new Python route
+        const response = await fetch(`/get_user_borrowed_books_details?user_id=${userId}`);
+        const books = await response.json();
+        
+        bookListContainer.innerHTML = ''; // Clear previous list
+        
+        if (books.length > 0) {
+            books.forEach(book => {
+                let overdueHtml = '';
+                if (book.is_overdue) {
+                    overdueHtml = `<span class="overdue-warning">OVERDUE (${book.days_overdue} days)</span>`;
+                }
+
+                // Create a checkbox for each book
+                const label = document.createElement('label');
+                label.className = 'book-checkbox-label';
+                label.innerHTML = `
+                    <input type="checkbox" name="book_ids" value="${book.book_id}">
+                    <strong>${book.title}</strong>
+                    (Due: ${book.due_date_str})
+                    ${overdueHtml}
+                `;
+                bookListContainer.appendChild(label);
+            });
+            
+            // Show the book list and the return fields
+            bookListArea.style.display = 'block';
+            returnFieldsArea.style.display = 'block';
+        } else {
+            bookListArea.style.display = 'none';
+            returnFieldsArea.style.display = 'none';
+            // Show error message in the list container
+            bookListContainer.innerHTML = '<p class="error-message">This member has no books currently borrowed.</p>';
+            bookListArea.style.display = 'block';
+        }
+    }
+
+    // --- THIS FUNCTION IS NEW ---
+    // Checks if any checkboxes are ticked to enable the submit button
+    function checkSubmitButtonState() {
+        const checkedBoxes = document.querySelectorAll('input[name="book_ids"]:checked').length;
+        if (checkedBoxes > 0) {
+            submitButton.disabled = false;
+        } else {
+            submitButton.disabled = true;
+        }
+    }
+
+    // --- THIS FUNCTION IS REMOVED ---
+    // async function fetchBorrowDetails() { ... }
+
+    function toggleDamageFine() {
+        if (statusSelect.value === 'Damaged') {
+            damageFineSection.style.display = 'block';
+            damageFineInput.setAttribute('required', 'required');
+        } else {
+            damageFineSection.style.display = 'none';
+            damageFineInput.removeAttribute('required');
+        }
+    }
+
+    // --- THIS FUNCTION IS UPDATED ---
+    async function initializeForm() {
+        if (prefilledData) {
+            userSearchInput.value = prefilledData.member_name;
+            userIdInput.value = prefilledData.user_id;
+            userSearchInput.disabled = true;
+
+            // Fetch all books for the user
+            await fetchBooksForUser(prefilledData.user_id);
+
+            // Now that the list is populated, find and check the specific book
+            const prefillCheckbox = document.querySelector(`input[name="book_ids"][value="${prefilledData.book_id}"]`);
+            if (prefillCheckbox) {
+                prefillCheckbox.checked = true;
+            }
+            
+            // Manually check the submit button state
+            checkSubmitButtonState();
+        }
+    }
+
+    // --- Event Listeners (Updated) ---
+    userSearchInput.addEventListener('keyup', searchMembers);
+    userSearchResults.addEventListener('click', selectMember);
+    
+    // NEW: Listen for clicks on the whole container
+    bookListContainer.addEventListener('change', checkSubmitButtonState); 
+    
+    // REMOVED: bookIdSelect.addEventListener('change', fetchBorrowDetails);
+    
+    statusSelect.addEventListener('change', toggleDamageFine);
+
+    // Run the initialization logic
+    initializeForm();
+});
+</script>
+{% endblock %}

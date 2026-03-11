@@ -1,0 +1,60 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Out of Stock Books - Library Management System{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  {# Link to the new stylesheet for this page #}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/out_of_stock.css') }}">
+{% endblock %}
+
+{% block admin_content %}
+<div class="stock-container">
+    <h2>Out of Stock Books</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="message {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% if books %}
+    <div class="table-wrapper">
+        <table class="results-table">
+            <thead>
+                <tr>
+                    <th>Book ID</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Shelf Location</th>
+                    <th>Section</th>
+                    <th class="action-col">Add Stock</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                <tr>
+                    <td>{{ book.book_id }}</td>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.shelf_code or 'No shelf' }}</td>
+                    <td>{{ book.section or 'No section' }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('add_stock') }}" class="add-stock-form">
+                            <input type="hidden" name="book_id" value="{{ book.book_id }}">
+                            <input type="number" name="copies" value="1" min="1" class="stock-input">
+                            <button type="submit" class="add-stock-btn">Add</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="no-stock-message">No books are currently out of stock!</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,192 @@
+/* Book Detail Page Specific Styles */
+
+/* Main Container */
+.book-detail-container {
+    max-width: 1200px;
+    /* Further reduced margin and padding */
+    margin: 5px auto;
+    padding: 5px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    /* ▼▼▼ ANIMATION ADDED HERE ▼▼▼ */
+    animation: simplePageTurn 0.8s ease-out forwards;
+}
+
+.book-detail-container h2,
+.book-detail-container h3 {
+    color: #2c3e50;
+    /* Further reduced font size and margins */
+    font-size: 18px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #3498db; /* Blue for details */
+    padding-bottom: 5px;
+}
+
+.book-detail-container h3 {
+    font-size: 15px;
+    margin-top: 15px;
+    border-bottom-color: #1abc9c; /* Teal for history */
+}
+
+/* Table Wrapper */
+.table-wrapper {
+    overflow-x: auto;
+    border: 1px solid #dfe6e9;
+    border-radius: 6px;
+}
+
+/* Specific style for the history table's wrapper.
+  This adds a max-height and a vertical scrollbar ONLY for the borrowers list,
+  keeping the main book details static and visible.
+*/
+.history-container .table-wrapper {
+    max-height: 150px; /* Further reduced height for compactness */
+    overflow-y: auto;
+}
+
+
+/* Detail & History Tables */
+.detail-table,
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.detail-table th, .detail-table td,
+.history-table th, .history-table td {
+    /* Further reduced padding for more compact rows */
+    padding: 5px 8px;
+    text-align: left;
+    border-bottom: 1px solid #dfe6e9;
+    vertical-align: middle;
+    font-size: 12px; /* Smaller base font for table content */
+}
+
+.detail-table tr:last-child th,
+.detail-table tr:last-child td {
+    border-bottom: none;
+}
+
+.detail-table th {
+    background-color: #f8f9f9;
+    font-weight: 600;
+    width: 25%;
+    color: #34495e;
+}
+
+.history-table thead {
+    background-color: #ecf0f1;
+    /* Makes the header sticky within the scrollable container */
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.history-table th {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.history-table tbody tr:hover {
+    background-color: #e8f6f3;
+}
+
+.highlight-cell {
+    background-color: #eaf5ff;
+    font-weight: bold;
+    color: #2980b9;
+}
+
+/* Action Buttons (Bottom of page) */
+.action-buttons {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.back-link {
+    color: #34495e;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.action-btn {
+    color: white;
+    padding: 4px 10px; /* Reduced padding */
+    border: none;
+    border-radius: 4px;
+    font-size: 11px; /* Reduced font size */
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.3s;
+    margin-left: 8px;
+}
+
+.action-btn:hover {
+    transform: translateY(-1px);
+}
+
+.update-btn {
+    background: linear-gradient(135deg, #f39c12 0%, #d35400 100%); /* Orange gradient */
+}
+.update-btn:hover { box-shadow: 0 2px 6px rgba(243, 156, 18, 0.3); }
+
+.issue-btn {
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); /* Green gradient */
+}
+.issue-btn:hover { box-shadow: 0 2px 6px rgba(46, 204, 113, 0.3); }
+
+.return-btn {
+    background-color: #3498db;
+    padding: 3px 5px; /* Reduced padding */
+    font-size: 9px; /* Reduced font size */
+}
+.return-btn:hover { background-color: #2980b9; }
+
+/* Status Badges (Copied from borrowed_books.css for consistency) */
+.status-badge {
+    padding: 2px 5px; /* Reduced padding */
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    font-size: 9px; /* Reduced font size */
+    white-space: nowrap;
+}
+
+.status-borrowed {
+    background-color: #f39c12; /* Warning yellow */
+}
+
+.status-overdue {
+    background-color: #8b0000; /* Dark Red */
+}
+
+/* Messages */
+.no-history-message,
+.no-book-found {
+    text-align: center;
+    padding: 8px; /* Reduced padding */
+    background-color: #f8f9f9;
+    border-radius: 5px;
+    color: #7f8c8d;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+/* ▼▼▼ PAGE TURN ANIMATION DEFINITION ▼▼▼ */
+@keyframes simplePageTurn {
+    from {
+        opacity: 0;
+        transform: perspective(1500px) rotateY(-90deg);
+        transform-origin: left center;
+    }
+    to {
+        opacity: 1;
+        transform: perspective(1500px) rotateY(0deg);
+        transform-origin: left center;
+    }
+}

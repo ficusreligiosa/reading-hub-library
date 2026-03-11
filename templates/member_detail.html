@@ -1,0 +1,114 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Member Details - {{ member.name }}{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/member_detail.css') }}">
+  <style>
+    .profile-photo {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #17a2b8;
+    }
+    .profile-photo-placeholder {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 4px solid #17a2b8;
+    }
+    .profile-photo-placeholder i {
+        font-size: 60px;
+        color: white;
+    }
+  </style>
+{% endblock %}
+
+{% block admin_content %}
+<div class="member-detail-container">
+    <div class="profile-card">
+        <div class="profile-header">
+            <!-- FIXED: Remove 'static/' prefix since it's already in the path -->
+            {% if member.photo_path and member.photo_path != '' %}
+                <!-- Option 1: If path includes 'static/' -->
+                {% set photo_url = '/' + member.photo_path %}
+                <img src="{{ photo_url }}" 
+                     alt="Member Photo" 
+                     class="profile-photo"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="profile-photo-placeholder" style="display:none;">
+                    <i class="fas fa-user"></i>
+                </div>
+            {% else %}
+                <div class="profile-photo-placeholder">
+                    <i class="fas fa-user"></i>
+                </div>
+            {% endif %}
+            
+            <div class="profile-info">
+                <h2>{{ member.name }}</h2>
+                <p><strong>Member ID:</strong> {{ member.member_id }}</p>
+                <span class="membership-badge type-{{ member.membership_type | lower }}">
+                    {{ member.membership_type.upper() }}
+                </span>
+            </div>
+        </div>
+        
+        <div class="contact-details">
+            <h3>Contact Information</h3>
+            <p><i class="fas fa-envelope"></i> <strong>Email:</strong> {{ member.email }}</p>
+            <p><i class="fas fa-phone"></i> <strong>Phone:</strong> {{ member.phone }}</p>
+            <p><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> {{ member.address }}</p>
+            <p><i class="fas fa-birthday-cake"></i> <strong>DOB:</strong> 
+                {{ member.date_of_birth.strftime('%d %B, %Y') if member.date_of_birth else 'N/A' }}
+            </p>
+        </div>
+        
+        <div class="profile-actions">
+            <a href="{{ url_for('edit_member', member_id=member.member_id) }}" class="btn btn-warning">
+                Edit Member Details
+            </a>
+        </div>
+    </div>
+
+    <div class="history-card">
+        <h3>Borrowing History</h3>
+        <div class="table-wrapper">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Book Title</th>
+                        <th>Borrow Date</th>
+                        <th>Due Date</th>
+                        <th>Return Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in history %}
+                    <tr>
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.borrow_date.strftime('%Y-%m-%d') }}</td>
+                        <td>{{ item.due_date.strftime('%Y-%m-%d') }}</td>
+                        <td>{{ item.return_date.strftime('%Y-%m-%d') if item.return_date else 'Not Returned' }}</td>
+                        <td>
+                            <span class="status-badge status-{{ item.status | lower }}">{{ item.status }}</span>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="no-records">This member has no borrowing history.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

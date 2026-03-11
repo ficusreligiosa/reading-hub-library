@@ -1,0 +1,105 @@
+/* Main Container */
+.edit-member-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.edit-member-container h2 {
+    color: #2c3e50;
+    font-size: 26px;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #f39c12;
+    padding-bottom: 10px;
+}
+
+/* Form Styles */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.edit-member-container form label {
+    display: block;
+    margin-bottom: 8px;
+    color: #34495e;
+    font-weight: 600;
+}
+
+.edit-member-container form input[type="text"],
+.edit-member-container form input[type="email"],
+.edit-member-container form select,
+.edit-member-container form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.edit-member-container form input:focus, 
+.edit-member-container form select:focus, 
+.edit-member-container form textarea:focus {
+    outline: none;
+    border-color: #f39c12;
+    box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.2);
+}
+
+.edit-member-container form textarea {
+    resize: vertical;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #ecf0f1;
+}
+
+
+/* ▼▼▼ SCOPED BUTTON STYLES ▼▼▼ */
+.edit-member-container .update-btn, 
+.edit-member-container .cancel-btn {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.edit-member-container .update-btn {
+    background-color: #f39c12;
+    color: white;
+}
+.edit-member-container .update-btn:hover {
+    background-color: #d35400;
+    transform: translateY(-2px);
+}
+
+.edit-member-container .cancel-btn {
+    background-color: #ecf0f1;
+    color: #7f8c8d;
+}
+.edit-member-container .cancel-btn:hover {
+    background-color: #bdc3c7;
+}
+/* ▲▲▲ END OF SCOPED STYLES ▲▲▲ */
+
+
+/* Flash Messages */
+.message { padding: 15px; margin-bottom: 20px; border-radius: 5px; font-weight: 500; }
+.message.success { background: rgba(39, 174, 96, 0.1); color: #27ae60; border-left: 4px solid #27ae60; }
+.message.error { background: rgba(231, 76, 60, 0.1); color: #e74c3c; border-left: 4px solid #e74c3c; }

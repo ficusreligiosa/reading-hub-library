@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Select Role - Library Management System{% endblock %}
+
+{% block content %}
+<h2 class="title">Select Your Role</h2>
+
+<form method="POST" action="{{ url_for('select_owner') }}">
+    <div class="role-container">
+        <!-- Admin Box -->
+        <label class="role-box">
+            <input type="radio" name="choice" value="Admin" hidden>
+            <span>Admin</span>
+        </label>
+
+        <!-- User Box -->
+        <label class="role-box">
+            <input type="radio" name="choice" value="User" hidden>
+            <span>User</span>
+        </label>
+
+        <!-- Owner Box -->
+        <label class="role-box">
+            <input type="radio" name="choice" value="Owner" hidden>
+            <span>Owner</span>
+        </label>
+    </div>
+
+    <div class="submit-container">
+        <button type="submit" class="submit-btn">Submit</button>
+    </div>
+</form>
+
+<script>
+    // Highlight selected box
+    const boxes = document.querySelectorAll('.role-box');
+    boxes.forEach(box => {
+        box.addEventListener('click', () => {
+            boxes.forEach(b => b.style.backgroundColor = '#f5f5f5'); // reset
+            box.style.backgroundColor = '#d1e7dd'; // selected
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,210 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Update Book - Library Management System{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/update_book_elegant.css') }}">
+{% endblock %}
+
+{% block admin_content %}
+<div class="update-book-container">
+    <h2>Update Book</h2>
+
+    <div class="search-section">
+        <h3>🔍 Search for a Book to Update</h3>
+        <form method="POST" id="search-form">
+            <div class="search-input-group">
+                <input type="text" name="search_query" id="search_query" placeholder="Search by Book ID, Title, or Author..." required>
+                <button type="submit" name="search" class="search-btn">Search</button>
+            </div>
+        </form>
+        
+        {% if search_results is not none %}
+            {% if search_results %}
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Copies</th>
+                            <th>Shelf</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for book in search_results %}
+                        <tr>
+                            <td>{{ book.book_id }}</td>
+                            <td>{{ book.title }}</td>
+                            <td>{{ book.author }}</td>
+                            <td>{{ book.copies }}</td>
+                            <td>{{ book.shelf_code or 'N/A' }}</td>
+                            <td>
+                                <a href="{{ url_for('update_book', book_id=book.book_id) }}" class="use-btn">Write</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="no-results">No books found matching your search criteria.</div>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <div class="info-box">
+        <p><strong>How to use:</strong> Search for a book and click "Use" to load its data. Then, change the desired fields and click "Update Book".</p>
+    </div>
+
+    <form method="POST" id="update-book-form">
+
+        <div class="form-group full-width">
+            <label for="book_id" class="required-field">Book ID</label>
+            <input type="number" name="book_id" id="book_id" placeholder="Required" 
+                   value="{{ book_to_update.book_id if book_to_update else '' }}" required readonly>
+        </div>
+
+        <div class="form-group full-width">
+            <label for="title">Title</label>
+            <input type="text" name="title" id="title" placeholder="Current: {{ book_to_update.title if book_to_update else '...' }}" 
+                   value="" maxlength="100">
+        </div>
+
+        <div class="form-group full-width">
+            <label for="author">Author</label>
+            <input type="text" name="author" id="author" placeholder="Current: {{ book_to_update.author if book_to_update else '...' }}" 
+                   value="" maxlength="50">
+        </div>
+        
+        <div class="form-group full-width">
+            <label for="publication">Publication</label>
+            <input type="text" name="publication" id="publication" placeholder="Current: {{ book_to_update.publication if book_to_update else '...' }}" 
+                   value="" maxlength="50">
+        </div>
+
+        <div class="form-group full-width">
+            <label for="genres">Genres (Current: {{ book_to_update.genres if book_to_update else '...' }})</label>
+            <div class="genre-selection-area">
+                <input type="text" id="genre-search" placeholder="Filter genres...">
+                <div class="genre-container">
+                    {% for genre in all_genres %}
+                    <label>
+                        <input type="checkbox" name="genres" value="{{ genre.genre_id }}" 
+                               {% if book_to_update and genre.genre_name in book_to_update.genres %}checked{% endif %}>
+                        {{ genre.genre_name }}
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="year">Year</label>
+            <input type="number" name="year" id="year" placeholder="Current: {{ book_to_update.year if book_to_update else '...' }}" 
+                   value="" min="1500" max="2100">
+        </div>
+        <div class="form-group">
+            <label for="copies">Copies</label>
+            <input type="number" name="copies" id="copies" placeholder="Current: {{ book_to_update.copies if book_to_update else '...' }}" 
+                   value="" min="0">
+        </div>
+
+        <div class="form-group">
+             <label for="price">Price (₹)</label>
+             <input type="number" step="0.01" name="price" id="price" placeholder="Current: {{ book_to_update.price if book_to_update else '...' }}" 
+                    value="">
+        </div>
+        <div class="form-group">
+            <label for="shelf_id">Shelf Location</label>
+            <select name="shelf_id" id="shelf_id">
+                <option value="">-- No Change --</option>
+                {% for shelf in shelves %}
+                    <option value="{{ shelf.shelf_id }}" {% if book_to_update and book_to_update.shelf_id == shelf.shelf_id %}selected{% endif %}>
+                        {{ shelf.shelf_code }} - {{ shelf.section }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="button-container">
+            <button type="submit" name="update" class="update-btn">Update Book</button>
+            <button type="reset" class="reset-btn">Clear Form</button>
+        </div>
+    </form>
+</div>
+
+<script>
+// Automatically scroll to the update form if it was pre-filled by the server
+document.addEventListener('DOMContentLoaded', function() {
+    const bookIdField = document.getElementById('book_id');
+    if (bookIdField && bookIdField.value) {
+        document.getElementById('update-book-form').scrollIntoView({ behavior: 'smooth' });
+    }
+});
+
+// Script for filtering genres
+document.getElementById("genre-search").addEventListener("keyup", function() {
+    const searchTerm = this.value.toLowerCase();
+    const allGenres = document.querySelectorAll(".genre-container label");
+
+    allGenres.forEach(function(label) {
+        const genreText = label.textContent.toLowerCase();
+        if (genreText.includes(searchTerm)) {
+            label.style.display = "flex";
+        } else {
+            label.style.display = "none";
+        }
+    });
+});
+
+
+// Search form validation
+document.getElementById("search-form").addEventListener("submit", function(e) {
+    const searchQuery = document.getElementById('search_query').value.trim();
+    if (!searchQuery) {
+        e.preventDefault();
+        alert("Please enter a search term.");
+    }
+});
+
+// Update form validation
+document.getElementById("update-book-form").addEventListener("submit", function(e) {
+    const bookId = document.querySelector('input[name="book_id"]').value;
+    const year = document.querySelector('input[name="year"]').value;
+    const copies = document.querySelector('input[name="copies"]').value;
+
+    if (!bookId || bookId.trim() === "") {
+        e.preventDefault();
+        alert("Book ID is required! Please search for a book and click 'Use' first.");
+        return;
+    }
+
+    if (year && (year < 1500 || year > 2100)) {
+        e.preventDefault();
+        alert("Please enter a valid year between 1500 and 2100.");
+        return;
+    }
+
+    if (copies && copies < 0) {
+        e.preventDefault();
+        alert("Number of copies cannot be negative.");
+        return;
+    }
+
+    const title = document.querySelector('input[name="title"]').value;
+    const author = document.querySelector('input[name="author"]').value;
+    const publication = document.querySelector('input[name="publication"]').value;
+    const price = document.querySelector('input[name="price"]').value;
+    const shelf_id = document.querySelector('select[name="shelf_id"]').value;
+    const genres = document.querySelectorAll('input[name="genres"]:checked').length > 0;
+
+    if (!title && !author && !publication && !year && !price && !shelf_id && !copies && !genres) {
+        e.preventDefault();
+        alert("Please fill in at least one field to update.");
+    }
+});
+</script>
+
+{% endblock %}

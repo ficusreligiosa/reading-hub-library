@@ -1,0 +1,179 @@
+/* General Layout */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: #333;
+    /* ---------------------------------------------------------------- */
+    /* *** START OF CRITICAL CHANGES FOR FULL-SCREEN BACKGROUND *** */
+    /* ---------------------------------------------------------------- */
+    background: transparent; /* Remove the solid background color */
+    
+    /* Set the background image, covering the entire viewport */
+    background-image: url('/static/background_image/the_reading_hub_logo7.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* Ensures image stays put on scroll */
+    /* ---------------------------------------------------------------- */
+    /* *** END OF CRITICAL CHANGES *** */
+    /* ---------------------------------------------------------------- */
+}
+
+/* Dashboard Container */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    /* OPTIONAL: Changed to semi-transparent to see background image through it */
+    background: rgba(44, 62, 80, 0.9); 
+    color: #fff;
+    padding: 20px;
+    flex-shrink: 0;
+}
+
+.sidebar h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+/* Dropdown Styles */
+.dropdown {
+    margin-bottom: 15px;
+}
+
+.dropdown-toggle {
+    width: 100%;
+    background: #34495e;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    text-align: left;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.dropdown-toggle:hover {
+    background: #1abc9c;
+}
+
+.dropdown-menu {
+    display: none;
+    flex-direction: column;
+    margin-top: 5px;
+    padding-left: 10px;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 8px;
+    /* CRITICAL FIX: Links in sidebar must be visible */
+    color: #050505; 
+    text-decoration: none;
+    font-size: 14px;
+    border-radius: 3px;
+    transition: background 0.3s;
+}
+
+.dropdown-menu a:hover {
+    background: #16a085;
+    color: #fff;
+}
+
+/* Show dropdown when active */
+.dropdown.active .dropdown-menu {
+    display: flex;
+}
+
+/* KPI Cards */
+.kpi-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    padding: 20px;
+    flex-grow: 1;
+    /* OPTIONAL: Changed to semi-transparent to see background image through it */
+    background: rgba(249, 249, 249, 0.9);
+}
+
+.card {
+    /* OPTIONAL: Changed to semi-transparent for subtle effect */
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card i {
+    font-size: 32px;
+    color: #2c3e50;
+}
+
+.card-content h4 {
+    margin: 0;
+    font-size: 16px;
+    color: #555;
+}
+
+.card-content p {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+/* Different Card Colors */
+.total-books i { color: #2980b9; }
+.checked-out i { color: #e67e22; }
+.overdue i { color: #c0392b; }
+.new-users i { color: #27ae60; }
+
+/* Main Content */
+.main-content {
+    padding: 20px;
+    /* OPTIONAL: Changed to semi-transparent */
+    background: rgba(255, 255, 255, 0.9);
+    flex-grow: 2;
+}
+
+.main-content h2 {
+    margin-top: 0;
+    font-size: 24px;
+    color: #2c3e50;
+}
+
+
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .kpi-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+    }
+
+    .kpi-cards {
+        grid-template-columns: 1fr;
+    }
+}

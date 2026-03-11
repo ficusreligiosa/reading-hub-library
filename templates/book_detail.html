@@ -1,0 +1,123 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Book Details - Library Management System{% endblock %}
+
+{% block head %}
+{{ super() }}
+{# Link to the new stylesheet for this page #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/book_detail.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %}
+
+{% block admin_content %}
+<div class="book-detail-container">
+    <h2>Book Details</h2>
+
+    {% if book %}
+    <div class="table-wrapper">
+        <table class="detail-table">
+            <tbody>
+                <tr>
+                    <th>Book ID</th>
+                    <td>{{ book.book_id }}</td>
+                </tr>
+                <tr>
+                    <th>Title</th>
+                    <td>{{ book.title }}</td>
+                </tr>
+                <tr>
+                    <th>Author</th>
+                    <td>{{ book.author }}</td>
+                </tr>
+                <tr>
+                    <th>Publication</th>
+                    <td>{{ book.publication }}</td>
+                </tr>
+                <tr>
+                    <th>Year</th>
+                    <td>{{ book.year }}</td>
+                </tr>
+                <tr>
+                    <th>Genres</th>
+                    <td>{{ book.genres if book.genres else 'N/A' }}</td>
+                </tr>
+                <tr>
+                    <th>Shelf</th>
+                    <td class="highlight-cell">{{ book.shelf_code if book.shelf_code else 'N/A' }} ({{ book.section }})
+                    </td>
+                </tr>
+                <tr>
+                    <th>Copies Available</th>
+                    <td>{{ book.copies }}</td>
+                </tr>
+                <tr>
+                    <th>Date Added</th>
+                    <td>{{ book.created_at.strftime('%Y-%m-%d') if book.created_at else 'N/A' }}</td>
+                </tr>
+                <tr>
+                    <th>Added by Staff (Staff ID)</th>
+                    <td>{{ book.staff_id }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="history-container">
+        <h3>Current Borrowers</h3>
+        {% if borrowing_history %}
+        <div class="table-wrapper">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Member ID</th>
+                        <th>Name</th>
+                        <th>Borrow Date</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in borrowing_history %}
+                    <tr>
+                        <td>{{ record.member_id }}</td>
+                        <td>{{ record.name }}</td>
+                        <td>{{ record.borrow_date.strftime('%Y-%m-%d') }}</td>
+                        <td>{{ record.due_date.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            {# This logic displays the correct status badge #}
+                            {% if record.status == "Borrowed" %}
+                                <span class="status-badge status-borrowed">Borrowed</span>
+                            {% elif record.status == "Overdue" %}
+                                <span class="status-badge status-overdue">Overdue</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('return_book', book_id=book.book_id, user_id=record.member_id) }}"
+                               class="action-btn return-btn" title="Return this Book">
+                                <i class="fas fa-undo"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="no-history-message">This book is not currently borrowed by any member.</p>
+        {% endif %}
+    </div>
+
+    {% else %}
+    <p class="no-book-found">No book found with the specified ID.</p>
+    {% endif %}
+
+    <div class="action-buttons">
+        <a href="{{ url_for('search_books') }}" class="back-link">⬅ Back to Search</a>
+        {% if book %}
+        <a href="{{ url_for('update_book', book_id=book.book_id) }}" class="action-btn update-btn">Update Book</a>
+        <a href="{{ url_for('issue_book', book_id=book.book_id) }}" class="action-btn issue-btn">Issue this Book</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

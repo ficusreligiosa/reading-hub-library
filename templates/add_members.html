@@ -1,0 +1,406 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Add Member - Library Management System{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/add_members.css') }}">
+{% endblock %}
+
+{% block admin_content %}
+<div class="add-member-container">
+    <h2>Add a New Member</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="message {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div id="validation-message" class="message error" style="display: none;"></div>
+
+    <form method="POST" action="{{ url_for('add_members') }}" enctype="multipart/form-data" id="add-member-form">
+        
+        <!-- MODIFIED: Added wrapper and span -->
+        <label for="name">Name:</label>
+        <div class="input-with-validation">
+            <input type="text" id="name" name="name" placeholder="Full Name" required maxlength="50">
+            <span id="name-validation-msg" class="validation-msg"></span>
+        </div>
+
+        <!-- UPDATED: Phone input with validation message area -->
+        <label for="phone">Phone:</label>
+        <div class="input-with-validation">
+            <!-- Modified: Removed pattern to allow live JS validation to handle it -->
+            <input type="text" id="phone" name="phone" placeholder="10-digit phone number" required maxlength="10">
+            <span id="phone-validation-msg" class="validation-msg"></span>
+        </div>
+        
+        <!-- UPDATED: Email input with validation message area -->
+        <label for="email">E-mail:</label>
+        <div class="input-with-validation">
+            <input type="email" id="email" name="email" placeholder="example@mail.com" required maxlength="100">
+            <span id="email-validation-msg" class="validation-msg"></span>
+        </div>
+
+        <!-- MODIFIED: Wrapped DOB in validation div -->
+        <label for="date_of_birth">Date of Birth:</label>
+        <div class="input-with-validation">
+            <input type="date" id="date_of_birth" name="date_of_birth" required>
+            <span id="dob-validation-msg" class="validation-msg"></span>
+        </div>
+
+        <!-- MODIFIED: Wrapped all address inputs -->
+        <label>Address:</label>
+        <div class="address-grid">
+            <div class="input-with-validation">
+                <input type="text" id="house_no" name="house_no" placeholder="House No." required maxlength="20">
+                <span id="house-no-validation-msg" class="validation-msg"></span>
+            </div>
+            <div class="input-with-validation">
+                <input type="text" id="locality" name="locality" placeholder="Locality" required maxlength="50">
+                <span id="locality-validation-msg" class="validation-msg"></span>
+            </div>
+            <div class="input-with-validation">
+                <input type="text" id="city" name="city" placeholder="City" required maxlength="50">
+                <span id="city-validation-msg" class="validation-msg"></span>
+            </div>
+            <div class="input-with-validation">
+                <input type="text" id="state" name="state" placeholder="State" required maxlength="50">
+                <span id="state-validation-msg" class="validation-msg"></span>
+            </div>
+            <div class="input-with-validation">
+                <input type="text" id="pincode" name="pincode" placeholder="Pincode" required maxlength="6">
+                <span id="pincode-validation-msg" class="validation-msg"></span>
+            </div>
+        </div>
+
+        <label for="membership_type">Membership Type:</label>
+        <select name="membership_type" id="membership_type" required>
+            <option value="" disabled selected>-- Select Membership Type --</option>
+            <option value="Student">Student</option>
+            <option value="Faculty">Faculty</option>
+            <option value="Staff">Staff</option>
+            <option value="External">External</option>
+        </select>
+
+        <div class="photo-upload-section">
+            <label for="photo-input">Upload Photo:</label>
+            <input type="file" name="photo" accept="image/*" required id="photo-input">
+            <img id="photo-preview" src="#" alt="Photo Preview" class="photo-preview-hidden">
+        </div>
+
+        <button type="submit" class="submit-btn">Add Member</button>
+    </form>
+</div>
+
+{% block scripts %}
+<script>
+    // --- Photo Preview Script (existing) ---
+    document.getElementById("photo-input").addEventListener("change", function () {
+      const file = this.files[0];
+      if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+              const preview = document.getElementById("photo-preview");
+              preview.src = e.target.result;
+              preview.classList.remove('photo-preview-hidden');
+          }
+          reader.readAsDataURL(file);
+      }
+    });
+
+    // --- NEW: Real-Time Validation Script ---
+    document.addEventListener('DOMContentLoaded', function() {
+        const phoneInput = document.getElementById('phone');
+        const emailInput = document.getElementById('email');
+        const phoneValidationMsg = document.getElementById('phone-validation-msg');
+        const emailValidationMsg = document.getElementById('email-validation-msg');
+        const addMemberForm = document.getElementById('add-member-form');
+        const validationBox = document.getElementById('validation-message');
+
+        // --- MODIFIED: Input fields and new validation spans ---
+        const nameInput = document.getElementById('name');
+        const nameValidationMsg = document.getElementById('name-validation-msg');
+        
+        const cityInput = document.getElementById('city');
+        const cityValidationMsg = document.getElementById('city-validation-msg');
+        
+        const stateInput = document.getElementById('state');
+        const stateValidationMsg = document.getElementById('state-validation-msg');
+        
+        const pincodeInput = document.getElementById('pincode');
+        const pincodeValidationMsg = document.getElementById('pincode-validation-msg');
+        
+        const houseNoInput = document.getElementById('house_no');
+        const houseNoValidationMsg = document.getElementById('house-no-validation-msg');
+        
+        const localityInput = document.getElementById('locality');
+        const localityValidationMsg = document.getElementById('locality-validation-msg');
+
+        // --- NEW: DOB validation elements ---
+        const dobInput = document.getElementById('date_of_birth');
+        const dobValidationMsg = document.getElementById('dob-validation-msg');
+
+
+        // Flags to track if the values are available in the DB
+        let isPhoneAvailable = false;
+        let isEmailAvailable = false;
+        let isPincodeValid = false; // Required, so starts as false
+        // --- NEW: Flag for DOB validation ---
+        let isDobValid = false; // Required, so starts as false
+
+        // --- NEW: Calculate and set max date for DOB ---
+        const today = new Date();
+        const maxYear = today.getFullYear() - 6;
+        const maxMonth = String(today.getMonth() + 1).padStart(2, '0'); // getMonth is 0-indexed
+        const maxDay = String(today.getDate()).padStart(2, '0');
+        const maxDate = `${maxYear}-${maxMonth}-${maxDay}`;
+        
+        dobInput.setAttribute('max', maxDate);
+        // --- END NEW DOB LOGIC ---
+
+
+        // --- MODIFIED: Helper function to restrict input and show message ---
+        function restrictInput(inputElement, regex, errorSpan, message) {
+            inputElement.addEventListener('input', function(e) {
+                const originalValue = e.target.value;
+                const newValue = originalValue.replace(regex, '');
+                
+                if (originalValue !== newValue) {
+                    // Show message if invalid chars were typed
+                    errorSpan.textContent = message;
+                    errorSpan.className = 'validation-msg invalid';
+                    e.target.value = newValue; // Set the corrected value
+                } else if (errorSpan.textContent === message) {
+                    // Clear message if no invalid chars and it's our message
+                    errorSpan.textContent = '';
+                    errorSpan.className = 'validation-msg';
+                }
+                
+                // Always clear if empty
+                if (newValue === '') {
+                    errorSpan.textContent = '';
+                    errorSpan.className = 'validation-msg';
+                }
+            });
+        }
+        
+        // --- MODIFIED: Helper function to restrict, truncate, and show message ---
+        function restrictAndTruncate(inputElement, regex, maxLength, errorSpan, formatMessage, lengthMessage) {
+             inputElement.addEventListener('input', function(e) {
+                const originalValue = e.target.value;
+                let newValue = originalValue.replace(regex, '');
+                let wasTruncated = false;
+
+                if (newValue.length > maxLength) {
+                    newValue = newValue.slice(0, maxLength);
+                    wasTruncated = true;
+                }
+                
+                // Set corrected value
+                e.target.value = newValue; 
+
+                // Decide on message
+                if (originalValue !== newValue && !wasTruncated) {
+                    // Invalid format message
+                    errorSpan.textContent = formatMessage;
+                    errorSpan.className = 'validation-msg invalid';
+                } else if (wasTruncated) {
+                    // Length message (takes priority)
+                    errorSpan.textContent = lengthMessage;
+                    errorSpan.className = 'validation-msg invalid';
+                } else if (errorSpan.textContent === formatMessage || errorSpan.textContent === lengthMessage) {
+                    // Clear our specific messages if input is now valid
+                    errorSpan.textContent = '';
+                    errorSpan.className = 'validation-msg';
+                }
+
+                // Special case for phone: if it's 10 digits, clear our message
+                // so the availability check can run on blur without confusion
+                if (inputElement.id === 'phone' && newValue.length === 10) {
+                     if (errorSpan.textContent === formatMessage || errorSpan.textContent === lengthMessage) {
+                        errorSpan.textContent = '';
+                        errorSpan.className = 'validation-msg';
+                     }
+                }
+                
+                // --- NEW: Special case for pincode ---
+                if (inputElement.id === 'pincode') {
+                    if (newValue.length === 6) {
+                        isPincodeValid = true;
+                        if (errorSpan.textContent === formatMessage || errorSpan.textContent === lengthMessage || errorSpan.textContent === 'Must be 6 digits.' || errorSpan.textContent === 'Pincode is required.') {
+                            errorSpan.textContent = '';
+                            errorSpan.className = 'validation-msg';
+                        }
+                    } else {
+                        isPincodeValid = false; // Not valid if not 6
+                    }
+                }
+                // --- END NEW ---
+
+
+                // Always clear if empty
+                if (newValue === '') {
+                    errorSpan.textContent = '';
+                    errorSpan.className = 'validation-msg';
+                }
+            });
+        }
+
+        // --- MODIFIED: Apply restrictions with messages ---
+        // Name: Allow letters and spaces only
+        restrictInput(nameInput, /[^a-zA-Z\s]/g, nameValidationMsg, "Only letters and spaces allowed.");
+        
+        // Phone: Allow numbers only, max 10
+        restrictAndTruncate(phoneInput, /\D/g, 10, phoneValidationMsg, "Only numbers allowed.", "Max 10 digits.");
+        
+        // City & State: Allow letters and spaces only
+        restrictInput(cityInput, /[^a-zA-Z\s]/g, cityValidationMsg, "Only letters and spaces allowed.");
+        restrictInput(stateInput, /[^a-zA-Z\s]/g, stateValidationMsg, "Only letters and spaces allowed.");
+        
+        // Pincode: Allow numbers only, max 6
+        restrictAndTruncate(pincodeInput, /\D/g, 6, pincodeValidationMsg, "Only numbers allowed.", "Max 6 digits.");
+        
+        // House No & Locality: Allow letters, numbers, spaces, and common punctuation
+        restrictInput(houseNoInput, /[^a-zA-Z0-9\s,-./]/g, houseNoValidationMsg, "Invalid characters.");
+        restrictInput(localityInput, /[^a-zA-Z0-9\s,-./]/g, localityValidationMsg, "Invalid characters.");
+        // --- END NEW RESTRICTIONS ---
+
+
+        async function checkAvailability(inputElement, msgElement, endpoint) {
+            const value = inputElement.value.trim();
+            let isAvailable = false;
+            
+            // Reset message and state (unless it's a format message)
+            if (msgElement.textContent !== 'Only numbers allowed.' && msgElement.textContent !== 'Max 10 digits.') {
+                msgElement.textContent = '';
+                msgElement.className = 'validation-msg';
+            }
+
+
+            // Check only if input format is valid
+            // --- MODIFIED: Simplified validity check as JS restricts format ---
+            if (value) { 
+                // Specific check for phone length
+                if (inputElement.name === 'phone' && value.length !== 10) {
+                     msgElement.textContent = 'Must be 10 digits';
+                     msgElement.classList.add('invalid');
+                     isPhoneAvailable = false;
+                     return; // Stop check if phone length is wrong
+                }
+                
+                const response = await fetch(`${endpoint}?${inputElement.name}=${value}`);
+                const data = await response.json();
+                
+                if (data.taken) {
+                    msgElement.textContent = 'Already taken';
+                    msgElement.classList.add('invalid');
+                } else {
+                    msgElement.textContent = 'Available';
+                    msgElement.classList.add('valid');
+                    isAvailable = true;
+                }
+            }
+            
+            // Update flags
+            if (inputElement.name === 'phone') isPhoneAvailable = isAvailable;
+            if (inputElement.name === 'email') isEmailAvailable = isAvailable;
+        }
+        
+        // Check on 'blur' (when user clicks away from the input)
+        phoneInput.addEventListener('blur', () => checkAvailability(phoneInput, phoneValidationMsg, '/check_phone'));
+        emailInput.addEventListener('blur', () => checkAvailability(emailInput, emailValidationMsg, '/check_email'));
+
+        // --- NEW: Add blur listener for pincode ---
+        pincodeInput.addEventListener('blur', function() {
+            const value = pincodeInput.value;
+            if (value.length > 0 && value.length < 6) {
+                pincodeValidationMsg.textContent = "Must be 6 digits.";
+                pincodeValidationMsg.className = 'validation-msg invalid';
+                isPincodeValid = false;
+            } else if (value.length === 6) {
+                 pincodeValidationMsg.textContent = "";
+                 pincodeValidationMsg.className = 'validation-msg';
+                 isPincodeValid = true;
+            } else if (value.length === 0) {
+                // It's required, so show error on blur if empty
+                pincodeValidationMsg.textContent = "Pincode is required.";
+                pincodeValidationMsg.className = 'validation-msg invalid';
+                isPincodeValid = false;
+            }
+        });
+
+        // --- NEW: Add blur listener for DOB ---
+        dobInput.addEventListener('blur', function() {
+            const selectedDate = new Date(dobInput.value);
+            const maxDateObj = new Date(maxDate);
+            
+            if (dobInput.value === '') {
+                dobValidationMsg.textContent = 'Date of Birth is required.';
+                dobValidationMsg.className = 'validation-msg invalid';
+                isDobValid = false;
+            } else if (selectedDate > maxDateObj) {
+                dobValidationMsg.textContent = 'Member must be at least 6 years old.';
+                dobValidationMsg.className = 'validation-msg invalid';
+                isDobValid = false;
+            } else {
+                dobValidationMsg.textContent = '';
+                dobValidationMsg.className = 'validation-msg';
+                isDobValid = true;
+            }
+        });
+
+
+        // Final check before submitting the form
+        addMemberForm.addEventListener('submit', function(e) {
+            // Re-check on submit in case the user didn't trigger blur
+            // We await these to ensure flags are set before checking them
+            // Note: This is a simplified approach. For robustness, you'd chain these.
+            checkAvailability(phoneInput, phoneValidationMsg, '/check_phone');
+            checkAvailability(emailInput, emailValidationMsg, '/check_email');
+            
+            // --- NEW: Manually trigger blur logic on submit ---
+            // This ensures the flags and messages are set
+            pincodeInput.dispatchEvent(new Event('blur'));
+            dobInput.dispatchEvent(new Event('blur'));
+
+            // --- MODIFIED: Added isDobValid check ---
+            if (!isPhoneAvailable || !isEmailAvailable || !isPincodeValid || !isDobValid) {
+                e.preventDefault(); // Stop form submission
+                let errorMessage = 'Please fix the errors before submitting. ';
+                if (!isPhoneAvailable) errorMessage += 'Phone number is invalid or already taken. ';
+                if (!isEmailAvailable) errorMessage += 'Email is invalid or already taken. ';
+                
+                // --- NEW: Add pincode error based on flag ---
+                if (!isPincodeValid) {
+                    if (pincodeInput.value.length === 0) {
+                        errorMessage += 'Pincode is required. ';
+                    } else {
+                        errorMessage += 'Pincode must be 6 digits. ';
+                    }
+                }
+
+                // --- NEW: Add DOB error based on flag ---
+                if (!isDobValid) {
+                    if (dobInput.value === '') {
+                        errorMessage += 'Date of Birth is required. ';
+                    } else {
+                        errorMessage += 'Member must be at least 6 years old. ';
+                    }
+                }
+                
+                validationBox.textContent = errorMessage;
+                validationBox.style.display = 'block';
+                window.scrollTo(0, 0); // Scroll to top to show message
+            } else {
+                validationBox.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}
+

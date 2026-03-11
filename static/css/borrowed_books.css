@@ -1,0 +1,188 @@
+/* Borrowed Books Page Specific Styles - COMPACT VERSION */
+
+/* Main Container: Reduced margins/padding, increased width */
+.borrowed-books-container {
+    max-width: 98%; /* Use more screen width */
+    margin: 10px auto; /* Reduced margin */
+    padding: 15px; /* Reduced padding */
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    animation: simplePageTurn 0.8s ease-out forwards;
+}
+
+.borrowed-books-container h2 {
+    color: #2c3e50;
+    font-size: 20px; /* Reduced font size */
+    margin-bottom: 15px; /* Reduced margin */
+    border-bottom: 2px solid #1abc9c;
+    padding-bottom: 5px; /* Reduced padding */
+}
+
+/* Search Form: Reduced margins/padding */
+.search-form {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 15px; /* Reduced margin */
+}
+
+.search-form input[type="text"] {
+    flex: 1;
+    padding: 8px 10px; /* Reduced padding */
+    border: 1px solid #bdc3c7; /* Thinner border */
+    border-radius: 4px;
+    font-size: 13px; /* Reduced font size */
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.search-form input[type="text"]:focus {
+    border-color: #1abc9c;
+    box-shadow: 0 0 0 2px rgba(26, 188, 156, 0.1);
+}
+
+.search-btn {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white;
+    padding: 8px 15px; /* Reduced padding */
+    border: none;
+    border-radius: 4px;
+    font-size: 13px; /* Reduced font size */
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.search-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
+}
+
+/* Table Wrapper: Removed horizontal scroll */
+.table-wrapper {
+    overflow-x: hidden; /* Prevents horizontal scroll */
+}
+
+/* Borrowed Table Styles: Reduced padding, text wrapping enabled */
+.borrowed-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 5px;
+}
+
+.borrowed-table thead {
+    background-color: #ecf0f1;
+}
+
+.borrowed-table th,
+.borrowed-table td {
+    padding: 6px 8px; /* DRASTICALLY reduced padding */
+    text-align: left;
+    border: 1px solid #dfe6e9;
+    vertical-align: middle;
+    white-space: normal; /* ALLOWS TEXT WRAPPING */
+    font-size: 13px; /* Reduced font size */
+}
+
+.borrowed-table th {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.borrowed-table tbody tr:nth-child(even) {
+    background-color: #f8f9f9;
+}
+
+.borrowed-table tbody tr:hover {
+    background-color: #e8f6f3;
+}
+
+/* View Button inside table: Made smaller */
+.view-btn {
+    display: inline-block;
+    margin-left: 5px;
+    padding: 2px 6px; /* Reduced padding */
+    font-size: 11px; /* Reduced font size */
+    font-weight: 600;
+    text-decoration: none;
+    color: white;
+    background-color: #3498db;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+}
+
+.view-btn:hover {
+    background-color: #2980b9;
+}
+
+/* Status Badges: Made smaller */
+.status-badge {
+    padding: 3px 8px; /* Reduced padding */
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+    font-size: 11px; /* Reduced font size */
+}
+
+.status-borrowed {
+    background-color: #f39c12;
+}
+
+.status-returned {
+    background-color: #27ae60;
+}
+
+.status-overdue {
+    background-color: #8b0000;
+}
+
+/* Other text styles */
+.not-returned {
+    color: #7f8c8d;
+    font-style: italic;
+    font-size: 12px;
+}
+
+.fine-amount {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.no-books-message {
+    text-align: center;
+    padding: 10px; /* Reduced padding */
+    color: #7f8c8d;
+    font-weight: 500;
+}
+
+/* Responsive Design: Adjusted breakpoint */
+@media (max-width: 768px) {
+    .borrowed-books-container {
+        padding: 10px;
+        margin: 10px;
+    }
+    
+    .borrowed-table th,
+    .borrowed-table td {
+        font-size: 12px; /* Even smaller on mobile */
+        padding: 5px;
+    }
+
+    .search-form {
+        flex-direction: column; /* Stack search on mobile */
+    }
+}
+
+/* ▼▼▼ PAGE TURN ANIMATION (Unchanged) ▼▼▼ */
+@keyframes simplePageTurn {
+    from {
+        opacity: 0;
+        transform: perspective(1500px) rotateY(-90deg);
+        transform-origin: left center;
+    }
+    to {
+        opacity: 1;
+        transform: perspective(1500px) rotateY(0deg);
+        transform-origin: left center;
+    }
+}

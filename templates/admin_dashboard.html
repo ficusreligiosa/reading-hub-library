@@ -1,0 +1,288 @@
+{% extends "admin_base.html" %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
+{% endblock %}
+
+
+{% block admin_content %}
+
+<!-- SECTION 1: Welcome Message (shows once per session) -->
+<div class="dashboard-header" id="welcome-message">
+    <h1>Welcome back, <strong>{{ session.username.rstrip('0123456789').title() }}</strong>! 👋</h1>
+    <p class="dashboard-subtitle">Here's what's happening in your library today.</p>
+</div>
+
+<!-- SECTION 2: KPI CARDS (Compact Single Row) -->
+<div class="kpi-cards">
+    <!-- Card 1: Total Books -->
+    <a href="{{ url_for('view_all_books') }}">
+        <div class="card total-books">
+            <div class="card-icon">
+                <i class="fas fa-book-open"></i>
+            </div>
+            <div class="card-content">
+                <p id="total-books-count">...</p>
+                <h4>Total Books</h4>
+            </div>
+        </div>
+    </a>
+    
+    <!-- Card 2: Checked Out -->
+    <a href="{{ url_for('view_checked_out') }}">
+        <div class="card checked-out">
+            <div class="card-icon">
+                <i class="fas fa-sign-out-alt"></i>
+            </div>
+            <div class="card-content">
+                <p id="checked-out-count">...</p>
+                <h4>Checked Out</h4>
+            </div>
+        </div>
+    </a>
+    
+    <!-- Card 3: Overdue Books -->
+    <a href="{{ url_for('overdue') }}">
+        <div class="card overdue">
+            <div class="card-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="card-content">
+                <p id="overdue-count">...</p>
+                <h4>Overdue Books</h4>
+            </div>
+        </div>
+    </a>
+    
+    <!-- Card 4: New Users -->
+    <a href="{{ url_for('add_members') }}">
+        <div class="card new-users">
+            <div class="card-icon">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <div class="card-content">
+                <p id="new-users-count">...</p>
+                <h4>New Users</h4>
+            </div>
+        </div>
+    </a>
+</div>
+
+<!-- SECTION 3: MAIN CONTENT -->
+<div class="main-content">
+    <div class="content-grid">
+        
+        <!-- Left Column: Activity & Search -->
+        <div class="left-column">
+            <!-- Widget 1: Recent Activity -->
+            <div class="widget activity-widget">
+                <div class="widget-header">
+                    <h3><i class="fas fa-history"></i> Recent Activity</h3>
+                </div>
+                <ul id="recent-activity-list">
+                    <li id="activity-loading">
+                        <div class="activity-loading">
+                            <i class="fas fa-spinner fa-spin"></i> Loading activities...
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Widget 2: Quick Book Location Search -->
+            <div class="widget search-widget">
+                <div class="widget-header">
+                    <h3><i class="fas fa-search"></i> Quick Book Location Search</h3>
+                </div>
+                <form method="POST" action="{{ url_for('search_books') }}" class="quick-search-form">
+                    <div class="search-input-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" name="search_term" placeholder="Search by title, author, or ISBN..." required>
+                    </div>
+                    <button type="submit" class="search-btn">
+                        <i class="fas fa-search"></i> Find Book
+                    </button>
+                </form>
+                <p class="quick-search-help-text">
+                    <i class="fas fa-info-circle"></i> Quickly locate any book in the library
+                </p>
+            </div>
+        </div>
+        
+        <!-- Right Column: Quick Actions -->
+        <div class="right-column">
+            <!-- Widget 3: Quick Actions -->
+            <div class="widget actions-widget">
+                <div class="widget-header">
+                    <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                </div>
+                <div class="quick-actions-container">
+                    <a href="{{ url_for('add_book') }}" class="quick-action-btn btn-add-book">
+                        <div class="action-icon">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <div class="action-content">
+                            <span class="action-title">Add New Book</span>
+                            <span class="action-desc">Add books to inventory</span>
+                        </div>
+                    </a>
+                    <a href="{{ url_for('add_members') }}" class="quick-action-btn btn-add-user">
+                        <div class="action-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="action-content">
+                            <span class="action-title">Register New User</span>
+                            <span class="action-desc">Add new library member</span>
+                        </div>
+                    </a>
+                    <a href="{{ url_for('return_book') }}" class="quick-action-btn btn-process-return">
+                        <div class="action-icon">
+                            <i class="fas fa-undo-alt"></i>
+                        </div>
+                        <div class="action-content">
+                            <span class="action-title">Process Return</span>
+                            <span class="action-desc">Check in returned books</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+    // Hide welcome message after first view (stores in sessionStorage)
+    document.addEventListener('DOMContentLoaded', function() {
+        const welcomeMsg = document.getElementById('welcome-message');
+        const hasSeenWelcome = sessionStorage.getItem('hasSeenWelcome');
+        
+        if (hasSeenWelcome) {
+            welcomeMsg.style.display = 'none';
+        } else {
+            sessionStorage.setItem('hasSeenWelcome', 'true');
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                welcomeMsg.style.transition = 'opacity 0.5s ease, margin 0.5s ease';
+                welcomeMsg.style.opacity = '0';
+                welcomeMsg.style.marginBottom = '0';
+                setTimeout(() => {
+                    welcomeMsg.style.display = 'none';
+                }, 500);
+            }, 5000);
+        }
+    });
+
+    // Function to fetch dashboard stats
+    function fetchDashboardStats() {
+        fetch('/api/dashboard/stats')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('total-books-count').innerText = (data.totalBooks || 0).toLocaleString();
+                document.getElementById('checked-out-count').innerText = (data.checkedOut || 0).toLocaleString();
+                document.getElementById('overdue-count').innerText = (data.overdueBooks || 0).toLocaleString();
+                document.getElementById('new-users-count').innerText = (data.newUsersThisMonth || 0).toLocaleString();
+            })
+            .catch(error => {
+                console.error('Error fetching dashboard stats:', error);
+                document.getElementById('total-books-count').innerText = 'N/A';
+                document.getElementById('checked-out-count').innerText = 'N/A';
+                document.getElementById('overdue-count').innerText = 'N/A';
+                document.getElementById('new-users-count').innerText = 'N/A';
+            });
+    }
+
+    // Function to fetch recent activity
+    function fetchRecentActivity() {
+        const activityList = document.getElementById('recent-activity-list');
+        const loadingItem = document.getElementById('activity-loading');
+        
+        fetch('/api/dashboard/activity') 
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('API endpoint not available');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (loadingItem) {
+                    loadingItem.remove();
+                }
+
+                if (data && data.activity && data.activity.length > 0) {
+                    data.activity.forEach(item => {
+                        const li = document.createElement('li');
+                        const iconClass = item.type === 'checkout' ? 'fa-arrow-right' : 
+                                        item.type === 'return' ? 'fa-arrow-left' : 
+                                        item.type === 'member_added' ? 'fa-user-plus' : 'fa-book';
+                        const iconColor = item.type === 'checkout' ? '#3498db' : 
+                                        item.type === 'return' ? '#2ecc71' : 
+                                        item.type === 'member_added' ? '#e74c3c' : '#9b59b6';
+                        
+                        li.innerHTML = `
+                            <div class="activity-icon" style="background-color: ${iconColor}20;">
+                                <i class="fas ${iconClass}" style="color: ${iconColor};"></i>
+                            </div>
+                            <div class="activity-details">
+                                <p class="activity-text">${item.description}</p>
+                                <span class="activity-time">${item.timestamp}</span>
+                            </div>
+                        `;
+                        activityList.appendChild(li);
+                    });
+                } else {
+                    const li = document.createElement('li');
+                    li.className = 'no-activity';
+                    li.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>No recent activity to show</p>
+                        </div>
+                    `;
+                    activityList.appendChild(li);
+                }
+            })
+            .catch(error => {
+                console.log('Activity feed unavailable:', error);
+                if (loadingItem) {
+                    loadingItem.remove();
+                }
+                const placeholderActivities = [
+                    { description: 'Book "The Great Gatsby" checked out by John Doe', timestamp: 'Recently', type: 'checkout' },
+                    { description: 'New member Sarah Johnson registered', timestamp: 'Recently', type: 'member_added' },
+                    { description: 'Book "1984" returned by Mike Smith', timestamp: 'Recently', type: 'return' },
+                    { description: '"To Kill a Mockingbird" added to library', timestamp: 'Recently', type: 'book_added' },
+                    { description: 'Book "Pride and Prejudice" checked out by Emma Wilson', timestamp: 'Recently', type: 'checkout' }
+                ];
+                placeholderActivities.forEach(item => {
+                    const li = document.createElement('li');
+                    const iconClass = item.type === 'checkout' ? 'fa-arrow-right' : 
+                                    item.type === 'return' ? 'fa-arrow-left' : 
+                                    item.type === 'member_added' ? 'fa-user-plus' : 'fa-book';
+                    const iconColor = item.type === 'checkout' ? '#3498db' : 
+                                    item.type === 'return' ? '#2ecc71' : 
+                                    item.type === 'member_added' ? '#e74c3c' : '#9b59b6';
+                    
+                    li.innerHTML = `
+                        <div class="activity-icon" style="background-color: ${iconColor}20;">
+                            <i class="fas ${iconClass}" style="color: ${iconColor};"></i>
+                        </div>
+                        <div class="activity-details">
+                            <p class="activity-text">${item.description}</p>
+                            <span class="activity-time">${item.timestamp}</span>
+                        </div>
+                    `;
+                    activityList.appendChild(li);
+                });
+            });
+    }
+
+    // Run fetches when the page is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchDashboardStats();
+        fetchRecentActivity();
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Browse by Category - Library Management System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="text-center mb-5">
+        <h1 class="display-4">
+            <i class="fas fa-th-large"></i> Browse Our Collection
+        </h1>
+        <p class="lead text-muted">Explore books by genre or section</p>
+    </div>
+
+    <!-- Browse by Genre Section -->
+    <div class="mb-5">
+        <h2 class="mb-4">
+            <i class="fas fa-tags"></i> Browse by Genre
+        </h2>
+        <div class="row g-4">
+            {% if genres %}
+                {% for genre in genres %}
+                <div class="col-md-4 col-lg-3">
+                    <a href="{{ url_for('browse_by_genre', genre_id=genre.genre_id) }}" 
+                       class="text-decoration-none">
+                        <div class="card h-100 shadow-sm hover-card">
+                            <div class="card-body text-center">
+                                <div class="genre-icon mb-3">
+                                    {% if 'Fiction' in genre.genre_name %}
+                                        <i class="fas fa-book-open fa-3x text-primary"></i>
+                                    {% elif 'Science' in genre.genre_name %}
+                                        <i class="fas fa-flask fa-3x text-success"></i>
+                                    {% elif 'History' in genre.genre_name %}
+                                        <i class="fas fa-landmark fa-3x text-warning"></i>
+                                    {% elif 'Biography' in genre.genre_name %}
+                                        <i class="fas fa-user fa-3x text-info"></i>
+                                    {% elif 'Children' in genre.genre_name %}
+                                        <i class="fas fa-child fa-3x text-danger"></i>
+                                    {% elif 'Technology' in genre.genre_name or 'Computer' in genre.genre_name %}
+                                        <i class="fas fa-laptop-code fa-3x text-primary"></i>
+                                    {% elif 'Art' in genre.genre_name %}
+                                        <i class="fas fa-palette fa-3x text-warning"></i>
+                                    {% elif 'Business' in genre.genre_name %}
+                                        <i class="fas fa-briefcase fa-3x text-secondary"></i>
+                                    {% else %}
+                                        <i class="fas fa-book fa-3x text-secondary"></i>
+                                    {% endif %}
+                                </div>
+                                <h5 class="card-title">{{ genre.genre_name }}</h5>
+                                <p class="text-muted mb-0">
+                                    <span class="badge bg-primary">{{ genre.book_count }} books</span>
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> No genres available yet.
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <hr class="my-5">
+
+    <!-- Browse by Section -->
+    <div class="mb-5">
+        <h2 class="mb-4">
+            <i class="fas fa-layer-group"></i> Browse by Section
+        </h2>
+        <div class="row g-4">
+            {% if sections %}
+                {% for section in sections %}
+                <div class="col-md-4 col-lg-3">
+                    <a href="{{ url_for('browse_by_section', section_name=section.section) }}" 
+                       class="text-decoration-none">
+                        <div class="card h-100 shadow-sm hover-card">
+                            <div class="card-body text-center">
+                                <div class="section-icon mb-3">
+                                    {% if 'Reference' in section.section %}
+                                        <i class="fas fa-book-reader fa-3x text-info"></i>
+                                    {% elif 'Children' in section.section %}
+                                        <i class="fas fa-child fa-3x text-danger"></i>
+                                    {% elif 'Magazine' in section.section or 'Periodical' in section.section %}
+                                        <i class="fas fa-newspaper fa-3x text-secondary"></i>
+                                    {% elif 'Digital' in section.section %}
+                                        <i class="fas fa-tablet-alt fa-3x text-primary"></i>
+                                    {% else %}
+                                        <i class="fas fa-bookmark fa-3x text-success"></i>
+                                    {% endif %}
+                                </div>
+                                <h5 class="card-title">{{ section.section }}</h5>
+                                <p class="text-muted mb-0">
+                                    <span class="badge bg-success">{{ section.book_count }} books</span>
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> No sections available yet.
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="text-center mt-5 mb-4">
+        <div class="card bg-light">
+            <div class="card-body py-4">
+                <h4><i class="fas fa-search"></i> Looking for something specific?</h4>
+                <p class="mb-3">Use our search feature to find books by title, author, or shelf code</p>
+                <a href="{{ url_for('search_books') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-search"></i> Search Books
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+        cursor: pointer;
+    }
+    
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
+    }
+    
+    .genre-icon, .section-icon {
+        padding: 20px;
+    }
+</style>
+{% endblock %}

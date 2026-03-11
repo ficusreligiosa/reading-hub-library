@@ -1,0 +1,136 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Issue a Book - Library Management System{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/issue_book.css') }}">
+{% endblock %}
+
+{% block admin_content %}
+<div class="issue-book-container">
+    
+    <div class="form-card-unified">
+
+        <form method="GET" action="{{ url_for('issue_book') }}" id="unified-search-form">
+            <h2>1. Find Member & Book</h2>
+            <div class="search-row">
+                <div class="form-group search-group">
+                    <label for="member_search_query">Search Member:</label>
+                    <input type="text" name="member_search_query" id="member_search_query" value="{{ member_search_query or '' }}" placeholder="Name, Email, or ID">
+                </div>
+                
+                <button type="submit" class="submit-btn-alt">Search</button>
+            </div>
+        </form>
+        <hr class="form-divider">
+
+        <form id="issue-book-form" method="POST" action="{{ url_for('issue_book') }}">
+            <h2>2. Issue Book(s)</h2>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="message {{ category }}">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <div class="form-group">
+                <label for="user_id">Select Member:</label>
+                <select id="user_id" name="user_id" required>
+                    {% if not members %}
+                        <option value="" disabled selected>--- Search for a member above ---</option>
+                    {% elif members|length == 1 %}
+                        <option value="{{ members[0][0] }}" selected>{{ members[0][1] }} ({{ members[0][2] }})</option>
+                    {% else %}
+                        <option value="" disabled selected>--- Select from search results ---</option>
+                        {% for member in members %}
+                            <option value="{{ member[0] }}">{{ member[1] }} ({{ member[2] }})</option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Select Books (from search results):</label>
+                {% if not books %}
+                    <p class="search-placeholder">--- Search for a book above (results will show here) ---</p>
+                {% else %}
+                    <div class="book-list-container">
+                        {% for book in books %}
+                            <label class="book-checkbox-label">
+                                <input type="checkbox" name="book_ids" value="{{ book[0] }}">
+                                {{ book[1] }} (by {{ book[2] }})
+                            </label>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="borrow_date">Borrow Date:</label>
+                    <input type="date" id="borrow_date" name="borrow_date" required readonly>
+                </div>
+                <div class="form-group">
+                    <label for="due_date">Due Date (for all selected):</label>
+                    <input type="date" id="due_date" name="due_date" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="amount">Amount (per book):</label>
+                <input type="number" id="amount" name="amount" value="0" min="0" step="0.01" required>
+            </div>
+
+            <div class="form-group">
+                <label for="status">Status:</label>
+                <select name="status" id="status" required>
+                    <option value="Borrowed">Borrow</option>
+                </select>
+            </div>
+            
+            <input type="hidden" name="member_search_query_hidden" value="{{ member_search_query or '' }}">
+            <input type="hidden" name="book_search_query_hidden" value="{{ book_search_query or '' }}">
+
+            <button type="submit" class="submit-btn">Issue Selected Books</button>
+        </form>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    // This script handles all the date validation logic
+    // IT DOES NOT NEED TO BE CHANGED.
+    document.addEventListener('DOMContentLoaded', function() {
+        const borrowDateInput = document.getElementById('borrow_date');
+        const dueDateInput = document.getElementById('due_date');
+
+        // 1. Set borrow date to today (it is readonly in HTML)
+        const today = new Date().toISOString().split('T')[0];
+        borrowDateInput.value = today;
+
+        // 2. Set minimum due date based on today's borrow date
+        function setMinDueDate() {
+            let borrowDate = new Date(borrowDateInput.value);
+            
+            // Set the minimum due date to one day AFTER the borrow date
+            borrowDate.setDate(borrowDate.getDate() + 1);
+            
+            let minDueDate = borrowDate.toISOString().split('T')[0];
+            
+            dueDateInput.setAttribute('min', minDueDate);
+
+            // If the current due date is invalid, set it to the min due date
+            if (!dueDateInput.value || dueDateInput.value < minDueDate) {
+                dueDateInput.value = minDueDate;
+            }
+        }
+
+        // Call the function on page load
+        setMinDueDate();
+    });
+</script>
+{% endblock %}
+{% endblock %}

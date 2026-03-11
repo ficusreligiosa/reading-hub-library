@@ -1,0 +1,146 @@
+/* Main Container */
+.add-member-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* NEW: Added the page turn animation */
+    animation: simplePageTurn 0.8s ease-out forwards;
+}
+
+.add-member-container h2 {
+    color: #2c3e50;
+    font-size: 28px;
+    margin-bottom: 25px;
+    border-bottom: 3px solid #3498db;
+    padding-bottom: 10px;
+}
+
+#add-member-form label {
+    display: block;
+    margin-bottom: 8px;
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+#add-member-form input[type="text"],
+#add-member-form input[type="email"],
+#add-member-form input[type="date"],
+#add-member-form select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #bdc3c7;
+    border-radius: 5px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    box-sizing: border-box;
+}
+
+#add-member-form input[type="text"]:focus,
+#add-member-form input[type="email"]:focus,
+#add-member-form input[type="date"]:focus,
+#add-member-form select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.address-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+.address-grid input { margin-bottom: 0; }
+
+.photo-upload-section {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.photo-preview-hidden { display: none; }
+#photo-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 2px solid #ddd;
+}
+
+/* --- NEW: Styles for Real-Time Validation --- */
+.input-with-validation {
+    position: relative;
+    margin-bottom: 20px;
+}
+.input-with-validation input { margin-bottom: 0; }
+
+.validation-msg {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 13px;
+    font-weight: 600;
+}
+.validation-msg.valid { color: #27ae60; }
+.validation-msg.invalid { color: #e74c3c; }
+
+/* General Styles */
+.submit-btn {
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white; padding: 14px 30px; border: none; border-radius: 5px; font-size: 16px;
+    font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.3s;
+    display: inline-block; margin-top: 10px;
+}
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(52, 152, 219, 0.3);
+}
+
+.message {
+    padding: 15px; margin-bottom: 20px; border-radius: 5px; font-weight: 500;
+}
+.message.success {
+    background: rgba(39, 174, 96, 0.1); color: #27ae60; border-left: 4px solid #27ae60;
+}
+.message.error {
+    background: rgba(231, 76, 60, 0.1); color: #e74c3c; border-left: 4px solid #e74c3c;
+}
+.download-id-card-section {
+    padding: 20px;
+    background-color: #e8f6f3;
+    border-left: 5px solid #27ae60;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.download-btn {
+    display: inline-block;
+    background-color: #27ae60;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* --- NEW: Page Load Animation --- */
+
+/* The simple page turn effect */
+@keyframes simplePageTurn {
+    from {
+        opacity: 0;
+        transform: perspective(1500px) rotateY(-90deg);
+        transform-origin: left center;
+    }
+    to {
+        opacity: 1;
+        transform: perspective(1500px) rotateY(0deg);
+        transform-origin: left center;
+    }
+}
+

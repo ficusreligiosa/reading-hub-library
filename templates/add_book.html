@@ -1,0 +1,351 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Add Book - Library Management System{% endblock %}
+
+{% block admin_content %}
+<div class="add-book-container">
+    <h2>Add a New Book</h2>
+
+    <!-- Quick Add Sections - Side by Side -->
+    <div class="quick-add-wrapper">
+        <!-- Quick Add Genre -->
+        <div class="quick-add-genre">
+            <h4>Add Genre:</h4>
+            <form method="POST" action="{{ url_for('add_book') }}">
+                <input type="text" name="genre_name" placeholder="e.g., Social Fiction" required maxlength="50">
+                <button type="submit" name="add_genre">+ Add</button>
+            </form>
+        </div>
+
+        <!-- Quick Add Shelf -->
+        <div class="quick-add-shelf">
+            <h4>Add Shelf:</h4>
+            <form method="POST" action="{{ url_for('add_book') }}" class="shelf-form">
+                <input type="text" name="shelf_code" placeholder="FIC-A1" required maxlength="20">
+                <input type="text" name="shelf_section" placeholder="Fiction" required maxlength="50">
+                <input type="text" name="shelf_description" placeholder="Fiction Section - Row A, Shelf 1" required maxlength="100">
+                <input type="number" name="floor_level" placeholder="Floor" required min="1" max="10" value="1">
+                <button type="submit" name="add_shelf">+ Add</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Validation message box -->
+    <div id="validation-message" class="message error full-width" style="display: none;"></div>
+
+    <form method="POST" action="{{ url_for('add_book') }}" id="add-book-form">
+        <!-- Title -->
+        <div>
+            <label for="title">Title:</label>
+            <input type="text" name="title" id="title" required maxlength="50">
+            <span id="title-error" style="color: red; font-size: 0.9em; display: none;"></span>
+        </div>
+
+        <!-- Author -->
+        <div>
+            <label for="author">Author:</label>
+            <input type="text" name="author" id="author" required maxlength="50">
+            <span id="author-error" style="color: red; font-size: 0.9em; display: none;"></span>
+        </div>
+
+        <!-- Publication -->
+        <div>
+            <label for="publication">Publication:</label>
+            <input type="text" name="publication" id="publication" required maxlength="50">
+            <span id="publication-error" style="color: red; font-size: 0.9em; display: none;"></span>
+        </div>
+
+        <!-- Year -->
+        <div>
+            <label for="year">Year:</label>
+            <input type="number" name="year" id="year" required min="1500" max="2025">
+            <span id="year-error" style="color: red; font-size: 0.9em; display: none;"></span>
+        </div>
+
+        <!-- Price -->
+        <div>
+            <label for="price">Price:</label>
+            <input type="number" name="price" id="price" required min="0" step="1" max="9999">
+            <span id="price-error" style="color: red; font-size: 0.9em; display: none;"></span>
+        </div>
+
+        <!-- Copies -->
+        <div>
+            <label for="copies">Copies:</label>
+            <input type="number" name="copies" id="copies" required min="1" max="100">
+            <span id="copies-error" style="color: red; font-size: 0.9em; display: none;"></span>
+        </div>
+
+        <!-- Genres - Full Width -->
+        <div class="full-width">
+            <label for="genres">Genres:</label>
+            <div class="genre-selection-area">
+                <input type="text" id="genre-search" placeholder="Filter genres...">
+                <div class="genre-container">
+                    {% for genre in genres %}
+                    <label>
+                        <input type="checkbox" name="genres" value="{{ genre[0] }}">
+                        {{ genre[1] }}
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            <small>Select at least one genre</small>
+        </div>
+        
+        <!-- Shelf Location - Full Width -->
+        <div class="full-width">
+            <label for="shelf_id">Shelf Location:</label>
+            <select name="shelf_id" id="shelf_id" required>
+                <option value="">Select Shelf</option>
+                {% for shelf in shelves %}
+                <option value="{{ shelf[0] }}">{{ shelf[1] }} - {{ shelf[2] }} (Floor {{ shelf[4] }})</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" name="add_book" class="submit-btn">Add Book</button>
+    </form>
+</div>
+
+<script>
+    // Prevent numbers in Author field
+    document.getElementById("author").addEventListener("input", function (e) {
+        e.target.value = e.target.value.replace(/\d/g, '');
+    });
+
+    // Prevent numbers in Publication field (allow alphanumeric but commonly it's text)
+    document.getElementById("publication").addEventListener("input", function (e) {
+        e.target.value = e.target.value.replace(/\d/g, '');
+    });
+
+    // Prevent special characters in Title (allow letters, numbers, spaces, and common punctuation)
+    document.getElementById("title").addEventListener("input", function (e) {
+        e.target.value = e.target.value.replace(/[^a-zA-Z0-9\s\-':,.!&]/g, '');
+    });
+
+    // Auto-format shelf code to uppercase
+    const shelfCodeInput = document.querySelector('input[name="shelf_code"]');
+    if (shelfCodeInput) {
+        shelfCodeInput.addEventListener('input', function(e) {
+            e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9\-]/g, '');
+        });
+    }
+
+    // Validate shelf section (letters and spaces only)
+    const shelfSectionInput = document.querySelector('input[name="shelf_section"]');
+    if (shelfSectionInput) {
+        shelfSectionInput.addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/[^a-zA-Z\s]/g, '');
+        });
+    }
+
+    // Price input listener (max 9999, no decimals)
+    document.getElementById("price").addEventListener("input", function (e) {
+        const errorSpan = document.getElementById("price-error");
+        // Remove any non-digit characters
+        e.target.value = e.target.value.replace(/[^\d]/g, '');
+        let priceValue = parseInt(e.target.value, 10);
+
+        if (priceValue > 9999) {
+            e.target.value = 9999;
+            errorSpan.textContent = "Price cannot be greater than ₹9999.";
+            errorSpan.style.display = "block";
+        } else {
+            errorSpan.textContent = "";
+            errorSpan.style.display = "none";
+        }
+    });
+
+    // Copies input listener (max 100)
+    document.getElementById("copies").addEventListener("input", function (e) {
+        const errorSpan = document.getElementById("copies-error");
+        // Remove any non-digit characters
+        e.target.value = e.target.value.replace(/[^\d]/g, '');
+        let copiesValue = parseInt(e.target.value, 10);
+
+        if (copiesValue > 100) {
+            e.target.value = 100;
+            errorSpan.textContent = "Number of copies cannot be greater than 100.";
+            errorSpan.style.display = "block"; 
+        } else if (copiesValue < 1 && e.target.value !== '') {
+            errorSpan.textContent = "At least 1 copy is required.";
+            errorSpan.style.display = "block";
+        } else {
+            errorSpan.textContent = "";
+            errorSpan.style.display = "none";
+        }
+    });
+
+    // Year input listener (4 digits, min 1500, max 2025)
+    document.getElementById("year").addEventListener("input", function (e) {
+        const errorSpan = document.getElementById("year-error");
+        let value = e.target.value;
+        const currentYear = 2025;
+
+        // Remove non-digits
+        value = value.replace(/\D/g, '');
+
+        // Truncate to 4 digits
+        if (value.length > 4) {
+            value = value.slice(0, 4);
+        }
+        
+        e.target.value = value;
+
+        if (value.length > 0) {
+             let yearValue = parseInt(value, 10);
+             
+             if (yearValue > currentYear) {
+                e.target.value = currentYear;
+                errorSpan.textContent = `Year cannot be after ${currentYear}.`;
+                errorSpan.style.display = "block";
+             } else if (value.length === 4 && yearValue < 1500) {
+                 errorSpan.textContent = "Year must be 1500 or later.";
+                 errorSpan.style.display = "block";
+             } else {
+                 errorSpan.textContent = "";
+                 errorSpan.style.display = "none";
+             }
+        } else {
+            errorSpan.textContent = "";
+            errorSpan.style.display = "none";
+        }
+    });
+
+    // Helper function to handle CHARACTER limit logic
+    function addCharacterLimitListener(inputId, limit, errorSpanId) {
+        document.getElementById(inputId).addEventListener("input", function(e) {
+            const errorSpan = document.getElementById(errorSpanId);
+            const currentLength = e.target.value.length;
+
+            if (currentLength >= limit) {
+                errorSpan.textContent = `Maximum ${limit} characters reached.`;
+                errorSpan.style.display = "block";
+            } else {
+                errorSpan.textContent = "";
+                errorSpan.style.display = "none";
+            }
+        });
+    }
+
+    // Add listeners for character-limited fields
+    addCharacterLimitListener("title", 50, "title-error");
+    addCharacterLimitListener("author", 50, "author-error");
+    addCharacterLimitListener("publication", 50, "publication-error");
+
+    // Final validation on form submit
+    document.getElementById("add-book-form").addEventListener("submit", function (e) {
+        const title = document.querySelector('input[name="title"]').value.trim();
+        const author = document.querySelector('input[name="author"]').value.trim();
+        const publication = document.querySelector('input[name="publication"]').value.trim();
+        const year = document.querySelector('input[name="year"]').value;
+        const copies = document.querySelector('input[name="copies"]').value;
+        const genres = document.querySelectorAll('input[name="genres"]:checked');
+        const price = document.querySelector('input[name="price"]').value;
+        const shelfId = document.querySelector('select[name="shelf_id"]').value;
+
+        const validationBox = document.getElementById("validation-message");
+        let errorMessages = [];
+
+        // Title validation
+        if (title.length === 0) {
+            errorMessages.push("Title is required.");
+        } else if (title.length > 50) {
+            errorMessages.push("Title cannot be more than 50 characters.");
+        } else if (title.length < 2) {
+            errorMessages.push("Title must be at least 2 characters.");
+        }
+
+        // Author validation
+        if (author.length === 0) {
+            errorMessages.push("Author name is required.");
+        } else if (author.length > 50) {
+            errorMessages.push("Author name cannot be more than 50 characters.");
+        } else if (author.length < 2) {
+            errorMessages.push("Author name must be at least 2 characters.");
+        } else if (/\d/.test(author)) {
+            errorMessages.push("Author name cannot contain numbers.");
+        }
+
+        // Publication validation
+        if (publication.length === 0) {
+            errorMessages.push("Publication name is required.");
+        } else if (publication.length > 50) {
+            errorMessages.push("Publication cannot be more than 50 characters.");
+        } else if (publication.length < 2) {
+            errorMessages.push("Publication must be at least 2 characters.");
+        } else if (/\d/.test(publication)) {
+            errorMessages.push("Publication name cannot contain numbers.");
+        }
+
+        // Genre validation
+        if (genres.length === 0) {
+            errorMessages.push("Please select at least one genre.");
+        }
+        
+        // Year validation
+        const currentYear = 2025;
+        const yearNum = parseInt(year);
+        if (!year || year.length !== 4) {
+            errorMessages.push("Please enter a valid 4-digit year.");
+        } else if (yearNum < 1500 || yearNum > currentYear) {
+            errorMessages.push(`Year must be between 1500 and ${currentYear}.`);
+        }
+        
+        // Price validation
+        const priceNum = parseInt(price);
+        if (!price || price === '') {
+            errorMessages.push("Price is required.");
+        } else if (priceNum < 0 || priceNum > 9999) {
+            errorMessages.push("Price must be between 0 and 9999.");
+        }
+
+        // Copies validation
+        const copiesNum = parseInt(copies);
+        if (!copies || copies === '') {
+            errorMessages.push("Number of copies is required.");
+        } else if (copiesNum < 1) {
+            errorMessages.push("Number of copies must be at least 1.");
+        } else if (copiesNum > 100) {
+            errorMessages.push("Number of copies cannot be greater than 100.");
+        }
+
+        // Shelf validation
+        if (!shelfId) {
+            errorMessages.push("Please select a shelf location.");
+        }
+
+        // Show errors if any
+        if (errorMessages.length > 0) {
+            e.preventDefault();
+            validationBox.innerHTML = '<strong>Please fix the following errors:</strong><br>' + errorMessages.join('<br>');
+            validationBox.style.display = "block";
+            window.scrollTo(0, 0);
+        } else {
+            validationBox.style.display = "none";
+        }
+    });
+
+    // Genre search filter
+    document.getElementById("genre-search").addEventListener("keyup", function () {
+        const searchTerm = this.value.toLowerCase();
+        const allGenres = document.querySelectorAll(".genre-container label");
+
+        allGenres.forEach(function (label) {
+            const genreText = label.textContent.toLowerCase();
+            if (genreText.includes(searchTerm)) {
+                label.style.display = "block";
+            } else {
+                label.style.display = "none";
+            }
+        });
+    });
+
+    // Prevent numbers in genre search
+    document.getElementById("genre-search").addEventListener("input", function (e) {
+        e.target.value = e.target.value.replace(/\d/g, '');
+    });
+</script>
+
+{% endblock %}

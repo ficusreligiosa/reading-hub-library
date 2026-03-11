@@ -1,0 +1,325 @@
+/* Add Book Page - Ultra Compact No-Scroll Version */
+
+/* Form Container */
+.add-book-container {
+    max-width: 700px;
+    margin: 5px auto;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    animation: simplePageTurn 0.8s ease-out forwards;
+}
+
+.add-book-container h2 {
+    color: #2c3e50;
+    font-size: 18px;
+    margin: 0 0 8px 0;
+    border-bottom: 2px solid #1abc9c;
+    padding-bottom: 6px;
+}
+
+/* Quick Add Sections - Side by Side */
+.quick-add-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.quick-add-genre,
+.quick-add-shelf {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 0;
+}
+
+.quick-add-genre {
+    background: #fdfaf6;
+    border-left: 3px solid #f39c12;
+}
+
+.quick-add-shelf {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.quick-add-genre h4,
+.quick-add-shelf h4 {
+    margin: 0 0 6px 0;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.quick-add-genre h4 {
+    color: #2c3e50;
+}
+
+.quick-add-shelf h4 {
+    color: white;
+}
+
+.quick-add-genre form {
+    display: flex;
+    gap: 6px;
+}
+
+.quick-add-shelf .shelf-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+}
+
+.quick-add-shelf .shelf-form button {
+    grid-column: span 2;
+}
+
+.quick-add-genre input[type="text"],
+.quick-add-shelf input[type="text"],
+.quick-add-shelf input[type="number"] {
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    outline: none;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.quick-add-genre input[type="text"] {
+    flex: 1;
+    border: 1px solid #f39c12;
+}
+
+.quick-add-shelf input[type="text"],
+.quick-add-shelf input[type="number"] {
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.quick-add-genre button,
+.quick-add-shelf button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s;
+    white-space: nowrap;
+}
+
+.quick-add-genre button {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    color: white;
+}
+
+.quick-add-shelf button {
+    background: white;
+    color: #667eea;
+}
+
+.quick-add-genre button:hover,
+.quick-add-shelf button:hover {
+    transform: translateY(-1px);
+}
+
+/* Main Form - Two Column Layout */
+#add-book-form {
+    background: rgba(249, 249, 249, 0.5);
+    padding: 12px;
+    border-radius: 5px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 12px;
+}
+
+/* Make some fields span full width */
+.full-width {
+    grid-column: span 2;
+}
+
+#add-book-form label {
+    display: block;
+    margin-bottom: 3px;
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+#add-book-form input[type="text"],
+#add-book-form input[type="number"],
+#add-book-form select {
+    width: 100%;
+    padding: 6px 8px;
+    margin-bottom: 0;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+}
+
+#add-book-form input[type="text"]:focus,
+#add-book-form input[type="number"]:focus,
+#add-book-form select:focus {
+    border-color: #1abc9c;
+    box-shadow: 0 0 0 2px rgba(26, 188, 156, 0.1);
+}
+
+/* Error spans */
+#add-book-form span[id$="-error"] {
+    display: block;
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+/* Genre Selection Area - Compact */
+.genre-selection-area {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    margin-top: 3px;
+}
+
+#genre-search {
+    width: 100%;
+    padding: 6px 10px;
+    margin-bottom: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 12px;
+}
+
+.genre-container {
+    max-height: 80px;
+    overflow-y: auto;
+    border: 1px solid #bdc3c7;
+    padding: 6px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.genre-container label {
+    display: flex;
+    align-items: center;
+    padding: 2px 0;
+    margin: 0;
+    font-weight: normal;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.genre-container label:hover {
+    background: rgba(26, 188, 156, 0.1);
+    border-radius: 3px;
+}
+
+.genre-container input[type="checkbox"] {
+    width: auto;
+    margin-right: 6px;
+    margin-bottom: 0;
+    cursor: pointer;
+}
+
+.genre-container::-webkit-scrollbar { width: 5px; }
+.genre-container::-webkit-scrollbar-track { background: #ecf0f1; border-radius: 3px; }
+.genre-container::-webkit-scrollbar-thumb { background: #95a5a6; border-radius: 3px; }
+
+/* Small Text Helper */
+small {
+    display: block;
+    color: #7f8c8d;
+    font-size: 10px;
+    margin: 2px 0 0 0;
+}
+
+/* Submit Button */
+.submit-btn {
+    background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+    color: white;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s;
+    grid-column: span 2;
+    margin-top: 5px;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
+}
+
+/* Select Dropdown Arrow */
+select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%232c3e50' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
+}
+
+/* Messages */
+.message,
+#validation-message {
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 11px;
+    grid-column: span 2;
+}
+
+.message.success {
+    background: rgba(39, 174, 96, 0.1);
+    color: #27ae60;
+    border-left: 3px solid #27ae60;
+}
+
+.message.error {
+    background: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+    border-left: 3px solid #e74c3c;
+}
+
+/* Page Load Animation */
+@keyframes simplePageTurn {
+    from {
+        opacity: 0;
+        transform: perspective(1500px) rotateY(-90deg);
+        transform-origin: left center;
+    }
+    to {
+        opacity: 1;
+        transform: perspective(1500px) rotateY(0deg);
+        transform-origin: left center;
+    }
+}
+
+/* Responsive - Stack on smaller screens */
+@media (max-width: 768px) {
+    .quick-add-wrapper {
+        grid-template-columns: 1fr;
+    }
+    
+    #add-book-form {
+        grid-template-columns: 1fr;
+    }
+    
+    .full-width,
+    .submit-btn {
+        grid-column: span 1;
+    }
+    
+    .quick-add-shelf .shelf-form {
+        grid-template-columns: 1fr;
+    }
+    
+    .quick-add-shelf .shelf-form button {
+        grid-column: span 1;
+    }
+}

@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome to The Reading Hub{% endblock %}
+
+{% block content %}
+<!-- 
+  FIX: Moved styles from 'extra_css' block to here
+  to ensure they are loaded correctly.
+-->
+<style>
+    /* Styles for the "hero" section.
+    */
+    .welcome-overlay {
+        min-height: 100vh;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .content-box {
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        background-color: rgba(0, 0, 0, 0.3); 
+        border-radius: 10px;
+        padding: 40px !important;
+        max-width: 600px;
+    }
+
+    .btn-primary {
+        background-color: #1abc9c;
+        border-color: #1abc9c;
+        font-weight: bold;
+    }
+    .btn-outline-light {
+        font-weight: bold;
+    }
+
+    /* A general class for padding new sections */
+    .new-section {
+        padding: 60px 15px;
+    }
+
+    /* NEW .info-section style to fix readability.
+      This replaces the .how-to-join-section style.
+    */
+    .info-section {
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent dark background */
+        color: white; /* White text for readability */
+        /* Adds a subtle line between sections */
+        border-top: 1px solid rgba(255, 255, 255, 0.1); 
+    }
+    .info-section h2, .info-section h4 {
+        color: white; /* Ensure headings are also white */
+    }
+    .info-section p, .info-section li {
+        color: #f1f1f1; /* A slightly softer white for paragraph text */
+    }
+
+
+    /* Styles for the "How to Join" icons */
+    .step-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background-color: #1abc9c;
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Styles for the "Explore Our Collection" cards.
+      Updated card text/title to be readable on a dark background.
+    */
+    .book-card {
+        border: 1px solid rgba(255,255,255,0.1); /* Subtle border for dark bg */
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transition: all 0.2s ease-in-out;
+        border-radius: 8px;
+        overflow: hidden;
+        background-color: #343a40; /* Dark card background */
+    }
+
+    .book-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    }
+
+    .book-card img {
+        height: 350px;
+        object-fit: cover;
+    }
+
+    .book-card .card-body {
+        text-align: left;
+    }
+
+    /*
+      FIX: Allow title to wrap to two lines
+    */
+    .book-card .card-title {
+        font-weight: bold;
+        white-space: normal; /* Allow wrapping */
+        overflow: hidden; /* Hide overflow */
+        color: white; /* White title */
+        
+        /* Set line-height and height to allow exactly 2 lines */
+        line-height: 1.25em; 
+        height: 2.5em; /* 1.25em * 2 lines = 2.5em */
+    }
+
+    .book-card .card-text {
+        color: #adb5bd; /* Light grey for author */
+    }
+
+
+    /* STYLES for "Visit Us" list */
+    .hours-list li {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .hours-list li span:first-child {
+        font-weight: 500;
+    }
+    
+    .hours-list li.closed span:last-child {
+        font-weight: bold;
+        color: #e74c3c; /* Red color for "Closed" */
+    }
+
+</style>
+
+<!-- 
+  SECTION 1: WELCOME HERO
+-->
+<div class="welcome-overlay">
+    <div class="container text-center py-5 content-box">
+        <h1 class="mt-4">Welcome to The Reading Hub!</h1>
+        <p class="lead">Explore | Discover | Manage</p>
+        <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg mt-3">Member Login</a>
+    </div>
+</div>
+
+<!-- 
+  SECTION 2: EXPLORE OUR COLLECTION
+  SUGGESTION: Applied the new .info-section class for a consistent look.
+-->
+<div class="info-section">
+    <div class="container new-section text-center">
+        <h2 class="mb-4">Explore Our Collection</h2>
+        <p class="lead mb-5">See what's new, popular, and waiting for you.</p>
+
+        <div class="row">
+            <!-- Book 1 -->
+            <div class="col-md-3 mb-4">
+                <div class="card book-card">
+                    <img src="../static/book_covers/sorcerer-stone-childrens-tenth-anniversary-edition.jpg" class="card-img-top" alt="Book Cover">
+                    <div class="card-body">
+                        <h5 class="card-title">Harry Potter and the sorcerer's stone</h5>
+                        <p class="card-text">J.K. Rowling</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Placeholder Book 2 -->
+            <div class="col-md-3 mb-4">
+                <div class="card book-card">
+                    <img src="https://placehold.co/300x450/4682B4/FFFFFF?text=Book+Cover" class="card-img-top" alt="Book Cover">
+                    <div class="card-body">
+                        <h5 class="card-title">Book Title Two</h5>
+                        <p class="card-text">Author Name</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Placeholder Book 3 -->
+            <div class="col-md-3 mb-4">
+                <div class="card book-card">
+                    <img src="https://placehold.co/300x450/8B4513/FFFFFF?text=Book+Cover" class="card-img-top" alt="Book Cover">
+                    <div class="card-body">
+                        <h5 class="card-title">Book Title Three</h5>
+                        <p class="card-text">Author Name</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Placeholder Book 4 -->
+            <div class="col-md-3 mb-4">
+                <div class="card book-card">
+                    <img src="https://placehold.co/300x450/6A5ACD/FFFFFF?text=Book+Cover" class="card-img-top" alt="Book Cover">
+                    <div class="card-body">
+                        <h5 class="card-title">Book Title Four</h5>
+                        <p class="card-text">Author Name</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-3">
+            <a href="{{ url_for('browse_genres') }}" class="btn btn-outline-light btn-lg">See All Books</a> <!-- Changed to btn-outline-light -->
+        </div>
+    </div>
+</div>
+
+<!-- 
+  SECTION 3: HOW TO JOIN
+  SUGGESTION: Applied the new .info-section class for a consistent look.
+-->
+<div class="info-section">
+    <div class="container new-section text-center">
+        <h2 class="mb-5">How to Join</h2>
+        <div class="row">
+            <!-- Step 1 -->
+            <div class="col-md-4 mb-4">
+                <div class="step-icon">1</div>
+                <h4>Visit Us</h4>
+                <p>Come to The Reading Hub in person. See our address and hours below.</p>
+            </div>
+            <!-- Step 2 -->
+            <div class="col-md-4 mb-4">
+                <div class="step-icon">2</div>
+                <h4>Get Your Card</h4>
+                <p>Our librarian will create your free account and give you a membership card.</p>
+            </div>
+            <!-- Step 3 -->
+            <div class="col-md-4 mb-4">
+                <div class="step-icon">3</div>
+                <h4>Manage Your Account</h4>
+                <p>Log in to your new account right here to manage your rentals and discover new books.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 
+  SECTION 4: VISIT US
+  SUGGESTION: Applied the new .info-section class for a consistent look.
+-->
+<div class="info-section">
+    <div class="container new-section">
+        <h2 class="text-center mb-5">Visit Us</h2>
+        <div class="row">
+            <!-- Column 1: Address & Map -->
+            <div class="col-md-6 mb-4">
+                <h4>Our Location</h4>
+                <p>
+                    <strong>The Reading Hub</strong><br>
+                    123 Library Lane<br>
+                    Booktown, BK 54321
+                </p>
+                <p>
+                    <strong>Phone:</strong> (123) 456-7890<br>
+                    <strong>Email:</strong> info@readinghub.com
+                </p>
+            </div>
+            <!-- Column 2: Opening Hours -->
+            <div class="col-md-6 mb-4">
+                <h4>Opening Hours</h4>
+                <ul class="list-unstyled hours-list">
+                    <li>
+                        <span>Monday</span>
+                        <span>10:00 AM - 6:00 PM</span>
+                    </li>
+                    <li>
+                        <span>Tuesday</span>
+                        <span>10:00 AM - 6:00 PM</span>
+                    </li>
+                    <li>
+                        <span>Wednesday</span>
+                        <span>10:00 AM - 8:00 PM</span>
+                    </li>
+                    <li>
+                        <span>Thursday</span>
+                        <span>10:00 AM - 6:00 PM</span>
+                    </li>
+                    <li>
+                        <span>Friday</span>
+                        <span>10:00 AM - 5:00 PM</span>
+                    </li>
+                    <li>
+                        <span>Saturday</span>
+                        <span>12:00 PM - 4:00 PM</span>
+                    </li>
+                    <li class="closed">
+                        <span>Sunday</span>
+                        <span>Closed</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+<!-- 
+  The <style> block was here, but has been
+  moved into the 'content' block to fix
+  a loading issue.
+-->
+{% endblock %}
+

@@ -1,0 +1,422 @@
+/* Update Book Page - Ultra Compact & Elegant Design */
+
+/* General Container */
+.update-book-container {
+    max-width: 900px;
+    margin: 8px auto;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    animation: simplePageTurn 0.8s ease-out forwards;
+}
+
+.update-book-container h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin: 0 0 12px 0;
+    font-size: 20px;
+    font-weight: 700;
+    border-bottom: 2px solid #667eea;
+    padding-bottom: 8px;
+}
+
+/* Search Section - Compact Header */
+.search-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
+}
+
+.search-section h3 {
+    margin: 0 0 10px 0;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Compact Search Input */
+.search-input-group {
+    display: flex;
+    gap: 8px;
+}
+
+.search-input-group input {
+    flex: 1; /* This makes the search bar fill the space */
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.search-input-group input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+.search-btn {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(56, 239, 125, 0.3);
+    white-space: nowrap;
+}
+
+.search-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(56, 239, 125, 0.4);
+}
+
+/* Compact Results Table */
+.results-table {
+    width: 100%;
+    margin-top: 15px;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    font-size: 12px;
+}
+
+.results-table th,
+.results-table td {
+    padding: 8px 10px;
+    text-align: left;
+}
+
+.results-table th {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.results-table tbody tr {
+    border-bottom: 1px solid #f1f3f5;
+    transition: all 0.2s ease;
+}
+
+.results-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.results-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.results-table td {
+    color: #495057;
+    font-size: 12px;
+}
+
+/* Use Button */
+.use-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    padding: 5px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(245, 87, 108, 0.3);
+    text-decoration: none;
+    text-align: center;
+}
+
+.use-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(245, 87, 108, 0.4);
+}
+
+.no-results {
+    text-align: center;
+    padding: 15px;
+    color: rgba(255, 255, 255, 0.9);
+    font-style: italic;
+    font-size: 13px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+/* Information Box */
+.info-box {
+    background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+    border-left: 3px solid #667eea;
+    padding: 10px 12px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.info-box p {
+    margin: 0;
+    color: #495057;
+    line-height: 1.5;
+    font-size: 13px;
+}
+
+.info-box strong {
+    color: #667eea;
+    font-weight: 600;
+}
+
+/* Compact Two-Column Form Layout */
+form#update-book-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 15px;
+}
+
+form#update-book-form label {
+    display: block;
+    margin-bottom: 4px;
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+form#update-book-form input[type="text"],
+form#update-book-form input[type="number"],
+form#update-book-form select {
+    width: 100%;
+    padding: 7px 10px;
+    margin-bottom: 0;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    font-size: 13px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+form#update-book-form input[type="text"]:focus,
+form#update-book-form input[type="number"]:focus,
+form#update-book-form select:focus {
+    border-color: #667eea;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    background: white;
+}
+
+.required-field::after {
+    content: " *";
+    color: #f5576c;
+    font-weight: bold;
+}
+
+/* Form Group for Individual Fields */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Full Width Elements */
+.full-width {
+    grid-column: span 2;
+}
+
+/* Genre Selection Area - Compact */
+.genre-selection-area {
+    margin-bottom: 0;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 10px;
+    background: #f8f9fa;
+    /* grid-column: span 2;  <-- REMOVED this to work inside .form-group.full-width */
+}
+
+#genre-search {
+    width: 100%;
+    padding: 6px 10px;
+    margin-bottom: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.genre-container {
+    max-height: 100px;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 6px;
+}
+
+.genre-container label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: normal;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 3px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.genre-container label:hover {
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.genre-container input[type="checkbox"] {
+    margin: 0;
+    cursor: pointer;
+}
+
+/* Scrollbar for Genre Container */
+.genre-container::-webkit-scrollbar {
+    width: 5px;
+}
+
+.genre-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.genre-container::-webkit-scrollbar-thumb {
+    background: #95a5a6;
+    border-radius: 10px;
+}
+
+/* Button Container */
+.button-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+    grid-column: span 2;
+}
+
+.update-btn,
+.reset-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.update-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+}
+
+.update-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.reset-btn {
+    background: linear-gradient(135deg, #868f96 0%, #596164 100%);
+    color: white;
+    box-shadow: 0 3px 10px rgba(108, 117, 125, 0.3);
+}
+
+.reset-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+}
+
+.update-btn:active,
+.reset-btn:active {
+    transform: translateY(0);
+}
+
+/* Page Turn Animation */
+@keyframes simplePageTurn {
+    from {
+        opacity: 0;
+        transform: perspective(1500px) rotateY(-90deg);
+        transform-origin: left center;
+    }
+    to {
+        opacity: 1;
+        transform: perspective(1500px) rotateY(0deg);
+        transform-origin: left center;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .update-book-container {
+        margin: 5px;
+        padding: 12px;
+    }
+
+    form#update-book-form {
+        grid-template-columns: 1fr;
+    }
+
+    .full-width,
+    .button-container {
+        grid-column: span 1;
+    }
+
+    .button-container {
+        flex-direction: column;
+    }
+
+    .search-input-group {
+        flex-direction: column;
+    }
+
+    .search-btn {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .results-table {
+        font-size: 11px;
+        display: block;
+        overflow-x: auto;
+    }
+
+    .genre-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Scrollbar for Results Table */
+.results-table::-webkit-scrollbar {
+    height: 5px;
+}
+
+.results-table::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.results-table::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+}
+
+.results-table::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}

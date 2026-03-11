@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{# Link the specific CSS for the admin dashboard layout #}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
+{% endblock %}
+
+
+{% block content %}
+<div class="dashboard-container">
+    {# This is the persistent sidebar. It will appear on every page that extends this template. #}
+    <div class="sidebar">
+        <h2>Dashboard</h2>
+
+        <div class="dropdown">
+            <button class="dropdown-toggle">Book Management</button>
+            <div class="dropdown-menu">
+                <a href="{{ url_for('add_book') }}">Add Book</a>
+                <a href="{{ url_for('update_book') }}">Update a Book</a>
+                <a href="{{ url_for('delete_book_page') }}">Delete a Book</a>
+                <a href="{{ url_for('search_books') }}">Search Books</a> 
+                <a href="{{ url_for('out_of_stock') }}">Stocked out Books</a>
+                <a href="{{ url_for('return_book') }}">Return a Book</a>
+                <a href="{{ url_for('view_all_books') }}">All Books</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <button class="dropdown-toggle">User Management</button>
+            <div class="dropdown-menu">
+                <a href="{{ url_for('add_members') }}">Add Member</a>
+                <a href="{{ url_for('view_members') }}">View all Members</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <button class="dropdown-toggle">Borrowing Management</button>
+            <div class="dropdown-menu">
+                <a href="{{ url_for('issue_book') }}">Issue Book</a>
+                <a href="{{ url_for('borrowed_books') }}">View all Borrowed Books</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <button class="dropdown-toggle">Financials</button>
+            <div class="dropdown-menu">
+                <a href="{{ url_for('add_expense') }}">Add Expense</a>
+            </div>
+        </div>
+    </div>
+
+    {# This is the main content area where child templates will inject their specific content #}
+    <div class="dashboard-content-area">
+        {% block admin_content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    {# This script activates the dropdowns in the sidebar #}
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    {# Add a new block for page-specific scripts #}
+    {% block page_scripts %}{% endblock %}
+{% endblock %}

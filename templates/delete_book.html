@@ -1,0 +1,174 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Delete Book - The Reading Hub{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/delete_book.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %}
+
+{% block admin_content %}
+<div class="delete-book-container">
+    <h2>Delete a Book</h2>
+
+    {# Display flashed messages from backend #}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="message {{ category }}">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    {# PREFILLED SECTION #}
+    {% if prefill_book %}
+    <div id="prefilled-section">
+        <h4>Book Selected for Deletion:</h4>
+        <div class="book-info">
+            <strong>Title:</strong> {{ prefill_book.title }}<br>
+            <strong>Author:</strong> {{ prefill_book.author }}
+        </div>
+        <p class="warning-text">
+            <i class="fas fa-exclamation-triangle"></i> This action is permanent and cannot be undone.
+        </p>
+        <form method="POST" action="{{ url_for('delete_book') }}">
+            <input type="hidden" name="book_id" value="{{ prefill_book.book_id }}">
+            <button type="submit" class="delete-btn">Yes, Permanently Delete This Book</button>
+            <a href="{{ url_for('delete_book_page') }}" class="cancel-btn">Cancel</a>
+        </form>
+    </div>
+    {% else %}
+    {# DEFAULT SEARCH-BASED DELETE SECTION #}
+    <div id="search-section">
+        <label for="book_search">Search by Title or Author to Delete</label>
+        <input type="text" id="book_search" placeholder="e.g., The Lord of the Rings" autocomplete="off">
+        <div id="search-results"></div>
+        <div id="loan-status-container" class="status-container" style="display: none;"></div>
+    </div>
+
+    <div id="confirm-delete-section" style="display: none;">
+        <h4>Book to be Deleted:</h4>
+        <div id="book-details" class="book-info"></div>
+        <p class="warning-text">
+            <i class="fas fa-exclamation-triangle"></i> This action is permanent and cannot be undone.
+        </p>
+        <form id="delete-book-form" method="POST" action="{{ url_for('delete_book') }}">
+            <input type="hidden" id="book_id_to_delete" name="book_id">
+            <button type="submit" class="delete-btn">Yes, Permanently Delete This Book</button>
+            <button type="button" id="cancel-btn" class="cancel-btn">Cancel</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+const returnBookPageUrl = "{{ url_for('return_book') }}";
+
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('book_search');
+    const searchResults = document.getElementById('search-results');
+    const confirmSection = document.getElementById('confirm-delete-section');
+    const bookDetailsDiv = document.getElementById('book-details');
+    const hiddenBookIdInput = document.getElementById('book_id_to_delete');
+    const cancelBtn = document.getElementById('cancel-btn');
+    const loanStatusContainer = document.getElementById('loan-status-container');
+    let debounceTimer;
+
+    if (!searchInput) return; // Skip script if prefill mode is active
+
+    searchInput.addEventListener('input', function () {
+        const query = searchInput.value.trim();
+        clearTimeout(debounceTimer);
+        loanStatusContainer.style.display = 'none';
+        if (query.length < 2) {
+            searchResults.innerHTML = '';
+            return;
+        }
+
+        debounceTimer = setTimeout(() => {
+            fetch(`/api/search_books?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => displayResults(data))
+                .catch(error => console.error('Error:', error));
+        }, 300);
+    });
+
+    function displayResults(books) {
+        searchResults.innerHTML = '';
+        if (books.length === 0) {
+            searchResults.innerHTML = '<div class="result-item no-results">No books found.</div>';
+            return;
+        }
+        books.forEach(book => {
+            const resultDiv = document.createElement('div');
+            resultDiv.classList.add('result-item');
+            resultDiv.innerHTML = `<strong>${book.title}</strong><br><small>${book.author}</small>`;
+            resultDiv.dataset.bookId = book.book_id;
+            resultDiv.dataset.title = book.title;
+            resultDiv.dataset.author = book.author;
+            resultDiv.addEventListener('click', function() {
+                checkBookStatus(this.dataset);
+            });
+            searchResults.appendChild(resultDiv);
+        });
+    }
+
+    async function checkBookStatus(bookData) {
+        searchResults.innerHTML = '';
+        searchInput.value = `${bookData.title} by ${bookData.author}`;
+
+        const response = await fetch(`/api/book_loan_status/${bookData.bookId}`);
+        const statusData = await response.json();
+
+        if (statusData.on_loan) {
+            displayLoanStatus(bookData.title, statusData.borrowers);
+            confirmSection.style.display = 'none';
+        } else {
+            loanStatusContainer.style.display = 'none';
+            bookDetailsDiv.innerHTML = `<strong>Title:</strong> ${bookData.title}<br><strong>Author:</strong> ${bookData.author}`;
+            hiddenBookIdInput.value = bookData.bookId;
+            confirmSection.style.display = 'block';
+        }
+    }
+
+    function displayLoanStatus(bookTitle, borrowers) {
+        let content = `
+            <h4><i class="fas fa-exclamation-triangle"></i> Deletion Blocked</h4>
+            <p>Cannot delete '<strong>${bookTitle}</strong>'. It is on loan and must be returned or marked as lost first.</p>
+            <ul class="borrower-list">
+        `;
+        borrowers.forEach(b => {
+            const statusBadge = b.loan_status === 'Overdue'
+                ? `<span class="status-badge overdue">Overdue</span>`
+                : `<span class="status-badge borrowed">Borrowed</span>`;
+            const dynamicReturnUrl = `${returnBookPageUrl}?borrow_id=${b.borrow_id}`;
+            content += `
+                <li>
+                    <div class="borrower-info">
+                        <strong>${b.name}</strong>
+                        <span>Borrowed for ${b.days_borrowed} days</span>
+                    </div>
+                    <div class="status-info">
+                        ${statusBadge}
+                    </div>
+                    <div class="action-info">
+                        <a href="${dynamicReturnUrl}" class="manage-btn">Return Book</a>
+                    </div>
+                </li>
+            `;
+        });
+        content += `</ul>`;
+        loanStatusContainer.innerHTML = content;
+        loanStatusContainer.style.display = 'block';
+    }
+
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', function() {
+            confirmSection.style.display = 'none';
+            searchInput.value = '';
+        });
+    }
+});
+</script>
+{% endblock %}

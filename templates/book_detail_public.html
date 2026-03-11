@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}{{ book.title if book else 'Book Not Found' }} - Library Management System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    {% if book %}
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h2><i class="fas fa-book"></i> {{ book.title }}</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="text-primary">Book Information</h5>
+                    <table class="table table-bordered">
+                        <tr>
+                            <th width="40%">Title</th>
+                            <td>{{ book.title }}</td>
+                        </tr>
+                        <tr>
+                            <th>Author</th>
+                            <td>{{ book.author }}</td>
+                        </tr>
+                        <tr>
+                            <th>Publication</th>
+                            <td>{{ book.publication if book.publication else 'N/A' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Year</th>
+                            <td>{{ book.year if book.year else 'N/A' }}</td>
+                        </tr>
+                        <tr>
+                            <th>ISBN</th>
+                            <td>{{ book.isbn if book.isbn else 'N/A' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Genres</th>
+                            <td>
+                                {% if book.genres %}
+                                    <span class="badge bg-info">{{ book.genres }}</span>
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="col-md-6">
+                    <h5 class="text-primary">Location & Availability</h5>
+                    <table class="table table-bordered">
+                        <tr>
+                            <th width="40%">Shelf Code</th>
+                            <td><strong>{{ book.shelf_code if book.shelf_code else 'N/A' }}</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Section</th>
+                            <td>{{ book.section if book.section else 'N/A' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Availability</th>
+                            <td>
+                                {% if book.copies > 0 %}
+                                    <span class="badge bg-success fs-6">
+                                        <i class="fas fa-check-circle"></i> Available ({{ book.copies }} copies)
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-danger fs-6">
+                                        <i class="fas fa-times-circle"></i> Out of Stock
+                                    </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+
+                    {% if book.description %}
+                    <div class="mt-3">
+                        <h5 class="text-primary">Description</h5>
+                        <p>{{ book.description }}</p>
+                    </div>
+                    {% endif %}
+
+                    <div class="alert alert-info mt-3">
+                        <i class="fas fa-info-circle"></i> 
+                        <strong>Want to borrow this book?</strong><br>
+                        Please <a href="{{ url_for('login') }}" class="alert-link">login</a> to your account to issue books.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <a href="{{ url_for('search_books') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Browse
+                </a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-danger">
+        <h4><i class="fas fa-exclamation-triangle"></i> Book Not Found</h4>
+        <p>The book you're looking for doesn't exist or has been removed.</p>
+        <a href="{{ url_for('search_books') }}" class="btn btn-primary">Browse Books</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,169 @@
+/* Member Detail Page Specific Styles */
+
+/* Main Container */
+.member-detail-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 25px;
+    animation: simplePageTurn 0.8s ease-out forwards;
+}
+
+/* Profile Card */
+.profile-card, .history-card {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
+.profile-photo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #1abc9c;
+}
+
+.profile-info h2 {
+    margin: 0 0 5px 0;
+    color: #2c3e50;
+    font-size: 24px;
+}
+
+.profile-info p {
+    margin: 0;
+    color: #7f8c8d;
+}
+
+.contact-details h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #2c3e50;
+    font-size: 18px;
+    border-bottom: 2px solid #1abc9c;
+    padding-bottom: 8px;
+}
+
+.contact-details p {
+    margin: 0 0 10px 0;
+    color: #34495e;
+    font-size: 15px;
+}
+.contact-details .fas {
+    margin-right: 10px;
+    color: #1abc9c;
+}
+
+.profile-actions {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.edit-btn {
+    background: linear-gradient(135deg, #f39c12 0%, #d35400 100%);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+.edit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(243, 156, 18, 0.3);
+}
+
+/* History Card */
+.history-card h3 {
+    color: #2c3e50;
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 8px;
+}
+
+.table-wrapper {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.history-table th, .history-table td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid #dfe6e9;
+    font-size: 14px;
+}
+
+.history-table thead {
+    position: sticky;
+    top: 0;
+    background-color: #ecf0f1;
+    z-index: 1;
+}
+.history-table th {
+    font-weight: 600;
+    color: #2c3e50;
+}
+.history-table tbody tr:hover {
+    background-color: #e9f6fd;
+}
+
+.no-records {
+    text-align: center;
+    padding: 20px;
+    color: #7f8c8d;
+}
+
+/* Status & Membership Badges */
+.membership-badge, .status-badge {
+    padding: 4px 10px;
+    border-radius: 15px;
+    color: white;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.type-student { background-color: #3498db; }
+.type-faculty { background-color: #9b59b6; }
+.type-staff { background-color: #e67e22; }
+.type-external { background-color: #7f8c8d; }
+
+.status-borrowed { background-color: #f39c12; }
+.status-returned { background-color: #27ae60; }
+.status-overdue { background-color: #c0392b; }
+
+
+@keyframes simplePageTurn {
+    from {
+        opacity: 0;
+        transform: perspective(1500px) rotateY(-90deg);
+        transform-origin: left center;
+    }
+    to {
+        opacity: 1;
+        transform: perspective(1500px) rotateY(0deg);
+        transform-origin: left center;
+    }
+}

@@ -1,0 +1,84 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Member Added Successfully{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/add_member_success.css') }}">
+  <!-- Assuming Font Awesome is in your base template, otherwise add it here -->
+{% endblock %}
+
+{% block admin_content %}
+<div class="success-container">
+    {% if member %}
+    <div class="success-card">
+        <div class="success-header">
+            <i class="fas fa-check-circle"></i>
+            <h2>Member Added Successfully!</h2>
+        </div>
+        
+        <div class="member-details">
+            <img src="{{ url_for('static', filename=member.photo_path) }}" alt="Member Photo" class="member-photo">
+            <h3>{{ member.name }}</h3>
+            <p>Member ID: {{ member.member_id }}</p>
+        </div>
+
+        <div class="credentials-section">
+            <h4>Login Credentials:</h4>
+            <p>These credentials can be used by the member to log into their portal.</p>
+            <div class="credential-item">
+                <label>Username:</label>
+                <div class="credential-value">
+                    <span id="username-text">{{ member.username }}</span>
+                    <button class="copy-btn" onclick="copyToClipboard('username-text', this)"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+            </div>
+            <div class="credential-item">
+                <label>Password:</label>
+                <div class="credential-value">
+                    <span id="password-text">{{ member.password }}</span>
+                    <button class="copy-btn" onclick="copyToClipboard('password-text', this)"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="download-section">
+            <a href="{{ url_for('download_id_card') }}" class="download-btn">
+                <i class="fas fa-id-card"></i> Download ID Card (PDF)
+            </a>
+        </div>
+        
+        <div class="actions">
+            <a href="{{ url_for('add_members') }}" class="action-link">Add Another Member</a>
+            <a href="{{ url_for('view_members') }}" class="action-link">View All Members</a>
+        </div>
+    </div>
+    {% else %}
+    <p>No member details to display.</p>
+    {% endif %}
+</div>
+
+{% block scripts %}
+<script>
+function copyToClipboard(elementId, buttonElement) {
+    const text = document.getElementById(elementId).innerText;
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        // Give user feedback
+        const originalText = buttonElement.innerHTML;
+        buttonElement.innerHTML = 'Copied!';
+        setTimeout(() => {
+            buttonElement.innerHTML = originalText;
+        }, 1500);
+    } catch (err) {
+        alert('Failed to copy text.');
+    }
+    document.body.removeChild(textArea);
+}
+</script>
+{% endblock %}
+{% endblock %}

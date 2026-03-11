@@ -1,0 +1,73 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Confirm Return Payment{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/payment_page.css') }}">
+<style>
+    .item-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 15px;
+    }
+    .item-list li {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .item-list li:last-child {
+        border-bottom: none;
+    }
+    .item-list .item-title {
+        color: #333;
+    }
+    .item-list .item-amount {
+        font-weight: bold;
+        color: #000;
+    }
+</style>
+{% endblock %}
+
+{% block admin_content %}
+<div class="payment-container">
+    <h2>Confirm Return and Payment</h2>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="message {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="payment-details">
+        <p><strong>Member:</strong> {{ details.member_name }}</p>
+        <p><strong>Status (for all):</strong> {{ details.status }}</p>
+        <p><strong>Return Date:</strong> {{ details.return_date }}</p>
+        <p><strong>Total Books:</strong> {{ details.items | length }}</p>
+
+        <ul class_a="item-list">
+            {% for item in details.items %}
+                <li>
+                    <span class="item-title">{{ item.book_title }}</span>
+                    <span class="item-amount">₹{{ "%.2f"|format(item.total_amount) }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <p style="text-align: center; font-size: 1.2em;">Total Amount Due:</p>
+    <div class="total-amount">
+        ₹{{ "%.2f"|format(details.grand_total) }}
+    </div>
+    
+    <div class="payment-actions">
+        <form method="POST" action="{{ url_for('process_return_payment') }}">
+            <button type="submit" class="confirm-btn">Confirm Payment Received</button>
+            <a href="{{ url_for('return_book') }}" class="cancel-link">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

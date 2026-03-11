@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Browse Books - Library Management System{% endblock %}
+
+{% block content %}
+<div class="search-container">
+    <h2>Browse Our Book Collection</h2>
+
+    <form id="search-form" method="POST" action="{{ url_for('search_books') }}">
+        <div class="search-options">
+            <label>
+                <input type="radio" name="search_by" value="title" {% if search_by == 'title' or not search_by %}checked{% endif %}>
+                Title
+            </label>
+            <label>
+                <input type="radio" name="search_by" value="author" {% if search_by == 'author' %}checked{% endif %}>
+                Author
+            </label>
+            <label>
+                <input type="radio" name="search_by" value="shelf_code" {% if search_by == 'shelf_code' %}checked{% endif %}>
+                Shelf Code
+            </label>
+        </div>
+        <div class="search-bar-group">
+            <input type="text" name="search_term" placeholder="Enter search term..." 
+                   value="{{ search_term }}">
+            <button type="submit" class="search-btn">Search</button>
+        </div>
+    </form>
+
+    <div class="search-results-container">
+        {% if books %}
+            <h3>Search Results for "{{ search_term }}" in {{ search_by|capitalize }}:</h3>
+            <div class="table-wrapper">
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Shelf</th>
+                            <th>Section</th>
+                            <th>Genres</th>
+                            <th>Availability</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for book in books %}
+                        <tr>
+                            <td><strong>{{ book.title }}</strong></td>
+                            <td>{{ book.author }}</td>
+                            <td class="highlight-cell"><strong>{{ book.shelf_code }}</strong></td>
+                            <td>{{ book.section }}</td>
+                            <td>{{ book.genres if book.genres else 'No genres' }}</td>
+                            <td>
+                                {% if book.copies > 0 %}
+                                    <span class="badge bg-success">Available ({{ book.copies }})</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Out of Stock</span>
+                                {% endif %}
+                            </td>
+                            <td class="actions-cell">
+                                <!-- Details Button -->
+                                <a href="{{ url_for('book_detail', book_id=book.book_id) }}" 
+                                   class="action-btn detail-btn" 
+                                   title="View Details">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </a>
+                                
+                                {% if user_logged_in %}
+                                    <!-- Update Button (Only for logged-in users) -->
+                                    <a href="{{ url_for('update_book', book_id=book.book_id) }}" 
+                                       class="action-btn update-btn" 
+                                       title="Update Book">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+
+                                    <!-- Issue Button (Only for logged-in users) -->
+                                    <a href="{{ url_for('issue_book', book_id=book.book_id) }}" 
+                                       class="action-btn issue-btn" 
+                                       title="Issue Book">
+                                        <i class="fas fa-arrow-circle-right"></i>
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% elif search_term %}
+            <p class="no-results">No books found with the {{ search_by | replace('_', ' ') }} "{{ search_term }}"</p>
+        {% else %}
+            <p class="text-center text-muted">Use the search bar above to find books in our collection</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

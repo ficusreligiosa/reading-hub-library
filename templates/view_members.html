@@ -1,0 +1,79 @@
+{% extends "admin_base.html" %}
+
+{% block title %}View Members - Library Management System{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/view_members.css') }}">
+{% endblock %}
+
+{% block admin_content %}
+<div class="view-members-container">
+    <h2>All Library Members</h2>
+
+    <!-- NEW: Added the search form -->
+    <form action="" method="get" class="search-form">
+        <input type="text" name="search_query" placeholder="Search by Name, Email, or Phone"
+               value="{{ request.args.get('search_query', '') }}">
+        <button type="submit" class="search-btn">Search</button>
+    </form>
+
+    <div class="table-wrapper">
+        <table class="members-table">
+            <thead>
+                <tr>
+                    <th>Member ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>Membership Type</th>
+                    <th>Join Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- FIXED: Using the correct variable 'members' from the route -->
+                {% for member in members %}
+                <tr>
+                    <!-- FIXED: Using the correct dictionary key 'member_id' -->
+                    <td>{{ member.member_id }}</td>
+                    <td>{{ member.name }}</td>
+                    <td>{{ member.email }}</td>
+                    <td>{{ member.phone }}</td>
+                    <!-- FIXED: Added the address field -->
+                    <td>{{ member.address }}</td>
+                    <td><span class="membership-badge type-{{ member.membership_type | lower }}">{{
+                            member.membership_type }}</span></td>
+                    
+                    <!-- ▼▼▼ DATE FORMAT CHANGED HERE ▼▼▼ -->
+                    <td>{{ member.created_at.strftime('%d-%m-%Y') if member.created_at else 'N/A' }}</td>
+                    
+                    <td>
+                        <!-- ▼▼▼ CORRECTION HERE ▼▼▼ -->
+                        <div class="actions-container">
+                            <!-- This link points to the 'member_detail' route -->
+                            <a href="{{ url_for('member_detail', member_id=member.member_id) }}" class="action-btn view-btn"
+                               title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </a>
+
+                            <!-- This link points to the 'edit_member' route -->
+                            <a href="{{ url_for('edit_member', member_id=member.member_id) }}" class="action-btn edit-btn"
+                               title="Edit Member">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </div>
+                        <!-- ▲▲▲ END OF CORRECTION ▲▲▲ -->
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8" class="no-records-message">No members found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

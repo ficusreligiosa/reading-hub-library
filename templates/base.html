@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Library Management System{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="../static/css/add_book.css">
+    <link rel="stylesheet" href="../static/css/update_book.css">
+    <link rel="stylesheet" href="../static/css/delete_book.css">
+    <link rel="stylesheet" href="../static/css/search_books.css">
+    <link rel="stylesheet" href="../static/css/book_detail.css">
+    <link rel="stylesheet" href="../static/css/out_of_stock.css">
+    <link rel="stylesheet" href="../static/css/select_admin.css">
+    <link rel="stylesheet" href="../static/css/select_owner.css">
+    <link rel="stylesheet" href="../static/css/add_member_success.css">
+    <link rel="stylesheet" href="../static/css/return_book.css">
+    <link rel="stylesheet" href="../static/css/admin_dashboard.css">
+    <link rel="stylesheet" href="../static/css/payment_page.css">
+    <link rel="stylesheet" href="../static/css/add_members.css">
+    <link rel="stylesheet" href="../static/css/view_members.css">
+    <link rel="stylesheet" href="../static/css/issue_book.css">
+    <link rel="stylesheet" href="../static/css/borrowed_books.css">
+    <link rel="stylesheet" href="../static/css/add_expense.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/view_all_books.css') }}">
+    <link rel="stylesheet" href="../static/css/member_detail.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/edit_member.css') }}">
+    <style>
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 0;
+            margin-top: auto;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        .user-info {
+            color: #ffc107;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+   <!-- Replace the navbar section in your base.html with this updated version -->
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="{% if user_logged_in %}{% if user_role == 'Admin' %}{{ url_for('admin_dashboard') }}{% elif user_role == 'Owner' %}{{ url_for('owner_dashboard') }}{% else %}{{ url_for('user_dashboard') }}{% endif %}{% else %}{{ url_for('index') }}{% endif %}">
+            <i class="fas fa-book-open"></i> The Reading Hub
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                {% if user_logged_in %}
+                    <li class="nav-item">
+                        <span class="nav-link user-info">
+                            <i class="fas fa-user-circle"></i> {{ username }} ({{ user_role }})
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% if user_role == 'Admin' %}{{ url_for('admin_dashboard') }}{% elif user_role == 'Owner' %}{{ url_for('owner_dashboard') }}{% else %}{{ url_for('user_dashboard') }}{% endif %}">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('change_password') }}">
+                            <i class="fas fa-key"></i> Change Password
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-danger btn-sm ms-2" href="{{ url_for('logout') }}">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                {% else %}
+                    <!-- Public Navigation Links -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('browse_genres') }}">
+                            <i class="fas fa-th-large"></i> Browse Categories
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('search_books') }}">
+                            <i class="fas fa-search"></i> Search Books
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+    <main>
+        <div class="container mt-3">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show"
+                role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <div class="container text-center">
+            <p>&copy; 2025 The Reading Hub. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-hide alerts after 5 seconds
+        setTimeout(function () {
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function (alert) {
+                var bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    </script>
+    {% block scripts %}{% endblock %}
+    <script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+</body>
+
+</html>

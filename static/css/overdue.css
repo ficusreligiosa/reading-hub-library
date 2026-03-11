@@ -1,0 +1,197 @@
+/* * ===================================================================
+ * Stylesheet for the Overdue Books Page
+ * BASED ON view_all_books_final.css for visual consistency.
+ * * v2: Increased specificity to prevent style conflicts.
+ * ===================================================================
+ */
+
+/* Main Container (Copied from view_all_books.css) */
+.view-books-container {
+    max-width: 95%;
+    margin: 20px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    animation: simplePageTurn 0.8s ease-out forwards; 
+}
+
+.view-books-container h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 10px; /* Less margin */
+    font-size: 1.8em;
+    font-weight: 700;
+}
+
+/* New subtitle style */
+.view-books-container .header-subtitle {
+    text-align: center;
+    color: #6c757d;
+    font-size: 1rem;
+    margin-top: -10px;
+    margin-bottom: 25px;
+}
+
+/* Filter/Search Bar (Copied from view_all_books.css) */
+.view-books-container .filter-container {
+    margin-bottom: 20px;
+}
+
+.view-books-container #searchInput {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.view-books-container #searchInput:focus {
+    border-color: #667eea;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+/* Table Wrapper (Copied from view_all_books.css) */
+.view-books-container .table-wrapper {
+    overflow-x: auto;
+}
+
+/* Books Table Styling (Copied from view_all_books.css) */
+.view-books-container .books-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    table-layout: fixed; 
+}
+
+.view-books-container .books-table th,
+.view-books-container .books-table td {
+    padding: 10px 8px;
+    text-align: left;
+    border-bottom: 1px solid #f1f3f5;
+    vertical-align: middle;
+}
+
+.view-books-container .books-table th {
+    background: #667eea; /* Same header color */
+    color: white;
+    font-weight: 600;
+    font-size: 0.8em; 
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    vertical-align: middle;
+}
+
+.view-books-container .books-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.view-books-container .books-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.view-books-container .books-table td {
+    color: #495057;
+    font-size: 0.85em; 
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Special cell styles */
+.view-books-container .books-table .center-align {
+    text-align: center;
+}
+.view-books-container .books-table .font-medium {
+    font-weight: 500;
+    color: #333;
+}
+.view-books-container .books-table .view-link {
+    font-size: 0.9em;
+    color: #5a67d8;
+    text-decoration: none;
+    margin-left: 4px;
+}
+.view-books-container .books-table .view-link:hover {
+    text-decoration: underline;
+}
+
+/* ▼▼▼ NEW COLUMN WIDTHS for Overdue Table ▼▼▼ */
+.view-books-container .books-table th:nth-child(1), .view-books-container .books-table td:nth-child(1) { width: 10%; } /* Borrow ID */
+.view-books-container .books-table th:nth-child(2), .view-books-container .books-table td:nth-child(2) { width: 25%; } /* Member Name */
+.view-books-container .books-table th:nth-child(3), .view-books-container .books-table td:nth-child(3) { width: 30%; } /* Book Title */
+.view-books-container .books-table th:nth-child(4), .view-books-container .books-table td:nth-child(4) { width: 15%; } /* Due Date */
+.view-books-container .books-table th:nth-child(5), .view-books-container .books-table td:nth-child(5) { width: 10%; } /* Status */
+.view-books-container .books-table th:nth-child(6), .view-books-container .books-table td:nth-child(6) { width: 10%; } /* Days Overdue */
+/* ▲▲▲ END COLUMN WIDTHS ▲▲▲ */
+
+
+/* ▼▼▼ NEW BADGE STYLES ▼▼▼ */
+.view-books-container .status-badge, 
+.view-books-container .days-overdue-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 9999px; /* Pill shape */
+    text-align: center;
+    line-height: 1.4;
+    box-sizing: border-box; /* Ensures padding doesn't break layout */
+}
+
+.view-books-container .status-badge.overdue {
+    background-color: #fffbeb; /* Light yellow */
+    color: #b45309; /* Dark yellow/brown */
+    border: 1px solid #fef3c7;
+}
+
+.view-books-container .days-overdue-badge {
+    background-color: #fee2e2; /* Light red */
+    color: #b91c1c; /* Dark red */
+    border: 1px solid #fecaca;
+    min-width: 30px;
+}
+/* ▲▲▲ END BADGE STYLES ▲▲▲ */
+
+
+/* No Books Message (Copied from view_all_books.css) */
+.view-books-container .no-books {
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Responsive Design (Copied from view_all_books.css) */
+@media (max-width: 768px) {
+    .view-books-container {
+        padding: 15px;
+        max-width: 100%;
+    }
+    .view-books-container .books-table {
+        table-layout: auto;
+    }
+    .view-books-container .books-table th, 
+    .view-books-container .books-table td {
+        width: auto;
+        white-space: nowrap;
+    }
+}
+
+/* Page Turn Animation (Copied from view_all_books.css) */
+@keyframes simplePageTurn {
+    from {
+        opacity: 0;
+        transform: perspective(1500px) rotateY(-90deg);
+        transform-origin: left center;
+    }
+    to {
+        opacity: 1;
+        transform: perspective(1500px) rotateY(0deg);
+        transform-origin: left center;
+    }
+}
+

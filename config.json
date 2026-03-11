@@ -1,0 +1,10 @@
+{
+    "params": {
+    "local_server":"True",
+    "user":"root",
+    "pass": "",
+    "host":"localhost",
+    "database": "the_reading_hub",
+    "cclass": "DictCursor"
+  }
+}

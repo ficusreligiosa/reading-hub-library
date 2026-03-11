@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Select Role - The Reading Hub{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/select_admin.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="select-role-page">
+  <div class="overlay"></div>
+  <div class="role-card">
+    <h2 class="role-title">Select Your Role</h2>
+
+    <form method="POST" action="{{ url_for('select_admin') }}" id="select-role-form">
+      <div class="role-options">
+        <label class="role-box">
+          <input type="radio" name="choice" value="Admin" required>
+          <div class="role-icon">👩‍💼</div>
+          <h3>Admin</h3>
+          <p>Manage books, users, and system settings.</p>
+        </label>
+
+        <label class="role-box">
+          <input type="radio" name="choice" value="User" required>
+          <div class="role-icon">📚</div>
+          <h3>User</h3>
+          <p>Borrow and explore books easily.</p>
+        </label>
+      </div>
+
+      <button type="submit" class="continue-btn">Continue</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const boxes = document.querySelectorAll('.role-box');
+    boxes.forEach(box => {
+      box.addEventListener('click', () => {
+        boxes.forEach(b => b.classList.remove('selected'));
+        box.classList.add('selected');
+      });
+    });
+  });
+</script>
+{% endblock %}
